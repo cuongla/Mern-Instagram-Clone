@@ -6,14 +6,16 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
+// routes
+import AuthRoute from './routes/auth.route';
+
 // middlewares
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-app.get('/', (req: Request, res: Response) => {
-    res.json({ msg: 'hello' })
-});
+// routes
+app.use('/api', AuthRoute);
 
 // connect to db
 mongoose.Promise = global.Promise
@@ -27,5 +29,6 @@ mongoose.connect(process.env.MONGO_URI, {
     console.log(`Connecting to mongodb`)
 });
 
+// connecting to port
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listning to port ${port}`));
