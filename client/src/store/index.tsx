@@ -5,11 +5,11 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 
 // reducers
 import authReducer from './reducers/authReducer';
-import notifyReducer from './reducers/notifyReducer';
+import alertReducer from './reducers/alertReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    notify: notifyReducer
+    alert: alertReducer
 })
 
 const store = createStore(

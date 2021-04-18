@@ -6,6 +6,7 @@ export const authTypes = {
 
 export interface AuthState {
     user: User | null
+    token: string
 }
 
 export interface RegisterData {

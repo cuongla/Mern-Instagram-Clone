@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const getDataAPI = async (url: string, token: string) => {
+export const getDataAPI = async (url: string, token?: string) => {
     const res = await axios.get(`/api/${url}`, {
         headers: {
             Authorization: token
@@ -10,7 +10,7 @@ export const getDataAPI = async (url: string, token: string) => {
     return res;
 }
 
-export const postDataAPI = async (url: string, data: any, token?: string) => {
+export const postDataAPI = async (url: string, data?: any, token?: string) => {
     const res = await axios.post(`/api/${url}`,
         data,
         {
