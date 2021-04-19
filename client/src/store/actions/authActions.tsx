@@ -1,17 +1,51 @@
 import { Dispatch } from 'react';
-import { postDataAPI } from 'functions/fetchData';
-import { AuthAction, LoginData } from '../types/authTypes';
+import { postDataAPI } from 'utils/fetchData';
+import { AuthAction, LoginData, RegisterData } from '../types/authTypes';
+import { formValidate } from 'utils/formValidate';
 import { ALERT } from '../types/alertTypes';
 
-export const login = (data: LoginData) => async (dispatch: Dispatch<AuthAction>) => {
+export const register = (data: RegisterData) => async (dispatch: Dispatch<AuthAction>) => {
+    // const checkData = formValidate(data);
+    // console.log(data);
+    // if(checkData.errLength > 0) {
+    //     return dispatch({
+    //         type: ALERT,
+    //         payload: {
+    //             errMsg: checkData.errMsg
+    //         }
+    //     });
+    // };
+    
     try {
-        //vloading
+        dispatch({ type: ALERT, payload: { loading: true }});
+
+        // regiter user
+        const res = await postDataAPI('register', data);
+        dispatch({
+            type: 'AUTH',
+            payload: {
+                token: res.data.access_token,
+                user: res.data.user
+            }
+        });
+        localStorage.setItem('auth', 'true');
+
+        // alert user that they have logged in
+        dispatch({ type: ALERT, payload: { msg: res.data.msg }});
+    } catch (err) {
+        console.log(err);
         dispatch({
             type: ALERT,
             payload: {
-                loading: true
+                error: err.response.data.msg
             }
         });
+    }
+}
+
+export const login = (data: LoginData) => async (dispatch: Dispatch<AuthAction>) => {
+    try {
+        dispatch({ type: ALERT, payload: { loading: true }});
 
         // login user
         const res = await postDataAPI('login', data);
@@ -65,7 +99,7 @@ export const refreshToken = () => async (dispatch: Dispatch<AuthAction>) => {
 
             dispatch({
                 type: ALERT,
-                payload: { }
+                payload: {}
             });
         } catch (err) {
             dispatch({

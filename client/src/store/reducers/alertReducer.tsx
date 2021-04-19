@@ -3,7 +3,8 @@ import { AlertActions, AlertState, ALERT } from '../types/alertTypes';
 const initialState: AlertState = {
     msg: '',
     loading: false,
-    error: ''
+    error: '',
+    errMsg: {}
 };
 
 const notifyReducer = (state = initialState, action: AlertActions) => {

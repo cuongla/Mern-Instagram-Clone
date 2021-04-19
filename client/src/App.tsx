@@ -27,6 +27,7 @@ function App() {
       <div className="App">
         <div className="main">
           <Route 
+            exact 
             path="/"
             component={auth.token ? Home : Login} />
           <Route

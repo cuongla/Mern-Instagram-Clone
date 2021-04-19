@@ -4,6 +4,7 @@ export interface AlertState {
     msg?: string
     error?: string
     loading?: boolean
+    errMsg?: any
 }
 
 // actions
