@@ -83,6 +83,21 @@ export const login = (data: LoginData) => async (dispatch: Dispatch<AuthAction>)
     }
 }
 
+export const logout = () => async (dispatch: Dispatch<AuthAction>) => {
+    try {
+        localStorage.removeItem('auth');
+        await postDataAPI('logout');
+        window.location.href = "/"
+    } catch (err) {
+        dispatch({
+            type: ALERT,
+            payload: {
+                error: err.response.data.msg
+            }
+        });
+    }
+}
+
 export const refreshToken = () => async (dispatch: Dispatch<AuthAction>) => {
     const localData = localStorage.getItem("auth");
 
@@ -119,3 +134,4 @@ export const refreshToken = () => async (dispatch: Dispatch<AuthAction>) => {
         }
     }
 }
+

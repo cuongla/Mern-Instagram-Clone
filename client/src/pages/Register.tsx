@@ -23,10 +23,9 @@ const Register = () => {
     });
     const { fullname, username, email, password, gender, confirmPassword } = userData;
     
-    
     useEffect(() => {
-        if (auth.access_token) history.push('/');
-    }, [history, auth]);
+        if (auth.token) history.push('/');
+    }, [dispatch, history, auth]);
 
     const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

@@ -8,6 +8,7 @@ import MaintRouter from './MaintRouter';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Alert from 'components/Alert';
+import Header from 'components/Header';
 import { RootState } from 'store';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         type="checkbox" />
       <div className="App">
         <div className="main">
+          { auth.token && <Header /> }
           <Route 
             exact 
             path="/"

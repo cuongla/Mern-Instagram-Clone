@@ -6,10 +6,12 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 // reducers
 import authReducer from './reducers/authReducer';
 import alertReducer from './reducers/alertReducer';
+import themeReducer from './reducers/themeReducers';
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    alert: alertReducer
+    alert: alertReducer,
+    theme: themeReducer
 })
 
 const store = createStore(

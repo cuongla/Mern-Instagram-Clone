@@ -32,5 +32,16 @@ code {
   margin: auto;
 }
 
+img {
+  object-fit: cover !important;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
 @import url('./styles/auth.css');
 @import url('./styles/loading.css');
+@import url('./styles//header.css');
