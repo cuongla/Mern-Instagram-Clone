@@ -2,13 +2,8 @@ import { RegisterData } from "store/types/authTypes";
 
 export const formValidate = ({ fullname, username, email, password, confirmPassword }: RegisterData) => {
 
-    const err = {
-        fullname: '',
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-    };
+    // @ts-ignore
+    const err: RegisterData = {};
 
     if(!fullname) {
         err.fullname = 'Please enter your fullname.'

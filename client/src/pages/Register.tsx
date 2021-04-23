@@ -6,34 +6,37 @@ import { RootState } from 'store';
 import { RegisterData } from 'store/types/authTypes';
 import { register } from 'store/actions/authActions';
 
+
 const Register = () => {
     const history = useHistory();
     const dispatch = useDispatch();
     const { auth, alert } = useSelector((state: RootState) => state);
+    const alertError: RegisterData = alert.errMsg;
     const [typePass, setTypePass] = useState(false);
     const [userData, setUserData] = useState<RegisterData>({
         fullname: '',
         username: '',
         email: '',
         password: '',
-        // confirmPassword: '',
+        confirmPassword: '',
         gender: ''
     });
-    const { fullname, username, email, password, gender } = userData;
-
+    const { fullname, username, email, password, gender, confirmPassword } = userData;
+    
+    
     useEffect(() => {
-        if (auth.token) history.push('/');
+        if (auth.access_token) history.push('/');
     }, [history, auth]);
 
     const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setUserData({ ...userData, [name]: value });
-    }
+    };
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
         dispatch(register(userData));
-    }
+    };
 
     return (
         <div className="auth_page">
@@ -50,9 +53,9 @@ const Register = () => {
                         id="fullname"
                         onChange={handleChangeInput}
                         value={fullname}
-                        style={{ background: `${alert.errMsg.fullname ? '#fd2d6a14' : ''}` }} />
+                        style={{ background: `${alertError.fullname ? '#fd2d6a14' : ''}` }} />
                     <small className="form-text text-danger">
-                        {alert.errMsg.fullname ? alert.errMsg.fullname : ''}
+                        {alertError.fullname ? alertError.fullname : ''}
                     </small>
                 </div>
                 <div className="mb-3">
@@ -66,9 +69,9 @@ const Register = () => {
                         id="username"
                         onChange={handleChangeInput}
                         value={username.toLowerCase().replace(/ /g, '')}
-                        style={{ background: `${alert.errMsg.username ? '#fd2d6a14' : ''}` }} />
+                        style={{ background: `${alertError.username ? '#fd2d6a14' : ''}` }} />
                     <small className="form-text text-danger">
-                        {alert.errMsg.username ? alert.errMsg.username : ''}
+                        {alertError.username ? alertError.username : ''}
                     </small>
                 </div>
                 <div className="mb-3">
@@ -80,9 +83,9 @@ const Register = () => {
                         id="exampleInputEmail1"
                         onChange={handleChangeInput}
                         value={email}
-                        style={{ background: `${alert.errMsg.email ? '#fd2d6a14' : ''}` }} />
+                        style={{ background: `${alertError.email ? '#fd2d6a14' : ''}` }} />
                     <small className="form-text text-danger">
-                        {alert.errMsg.email ? alert.errMsg.email : ''}
+                        {alertError.email ? alertError.email : ''}
                     </small>
                 </div>
                 <div className="mb-3">
@@ -95,16 +98,16 @@ const Register = () => {
                             onChange={handleChangeInput}
                             value={password}
                             name="password"
-                            style={{ background: `${alert.errMsg.password ? '#fd2d6a14' : ''}` }} />
+                            style={{ background: `${alertError.password ? '#fd2d6a14' : '' }` }} />
                         <small onClick={() => setTypePass(!typePass)}>
                             {typePass ? 'Hide' : 'Show'}
                         </small>
                     </div>
                     <small className="form-text text-danger">
-                        {alert.errMsg.password ? alert.errMsg.password : ''}
+                        {alertError.password ? alertError.password : ''}
                     </small>
                 </div>
-                {/* <div className="mb-3">
+                <div className="mb-3">
                     <label className="form-label">Confirmation Password</label>
                     <input
                         type="password"
@@ -112,11 +115,11 @@ const Register = () => {
                         id="confirmPassword"
                         onChange={handleChangeInput}
                         value={confirmPassword}
-                        name="confirmPassword" style={{ background: `${alert.errMsg.confirmPassword ? '#fd2d6a14' : ''}` }} />
+                        name="confirmPassword" style={{ background: `${alertError.confirmPassword ? '#fd2d6a14' : ''}` }} />
                     <small className="form-text text-danger">
-                        {alert.errMsg.confirmPassword ? alert.errMsg.confirmPassword : ''}
+                        {alertError.confirmPassword ? alertError.confirmPassword : ''}
                     </small>
-                </div> */}
+                </div>
                 <div className="row mx-0 mb-1 justify-content-between">
                     <label htmlFor="male">
                         Male: <input
@@ -125,7 +128,6 @@ const Register = () => {
                             name="gender"
                             value="male"
                             defaultChecked
-                            checked={gender === 'male'}
                             onChange={handleChangeInput} />
                     </label>
                     <label htmlFor="female">

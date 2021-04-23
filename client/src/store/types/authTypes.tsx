@@ -23,7 +23,6 @@ export interface LoginData {
     password: string
 }
 
-
 // actions
 interface SetAuthAction {
     type: typeof authTypes.AUTH
