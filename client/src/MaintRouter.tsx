@@ -2,6 +2,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { IParams } from 'typings/params';
 import NotFound from 'components/NotFound';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 const generatePage = (pageName: string) => {
     // upper the first letter
@@ -19,12 +21,16 @@ const generatePage = (pageName: string) => {
 
 const MaintRouter = () => {
     const { page, id  } = useParams<IParams>();
+    const { auth } = useSelector((state: RootState) => state);
     let pageName = "";
 
     // check id
-    if(id) {
-        pageName = `${page}/[id]`;
-    }  
+    if(auth.token) {
+        if(id) {
+            pageName = `${page}/[id]`;
+        }  
+        pageName = `${page}`
+    }
     
     pageName = `${page}`
     return generatePage(pageName)

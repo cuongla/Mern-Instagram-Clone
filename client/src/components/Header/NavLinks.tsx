@@ -1,4 +1,4 @@
-interface navLinksProps {
+export interface navLinksProps {
     label: string
     icon: string
     path: string
@@ -23,6 +23,6 @@ export const navLinks: navLinksProps[] = [
     {
         label: 'Notify',
         icon: 'favorite',
-        path: '/notify'
+        path: '/notifications'
     }
 ];
