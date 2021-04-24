@@ -7,7 +7,8 @@ import cookieParser from 'cookie-parser';
 const app = express();
 
 // routes
-import AuthRoute from './routes/auth.route';
+import AuthRoutes from './routes/auth.routes';
+import UserRoutes from './routes/user.routes';
 
 // middlewares
 app.use(express.json());
@@ -15,7 +16,8 @@ app.use(cors());
 app.use(cookieParser());
 
 // routes
-app.use('/api', AuthRoute);
+app.use('/api', AuthRoutes);
+app.use('/api', UserRoutes);
 
 // connect to db
 mongoose.Promise = global.Promise
