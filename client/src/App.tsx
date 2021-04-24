@@ -42,9 +42,11 @@ function App() {
             path="/register"
             component={Register} />
           <PrivateRoute
+            exact
             path="/:page"
             component={MaintRouter} />
           <PrivateRoute
+            exact 
             path="/:page/:id"
             component={MaintRouter} />
         </div>

@@ -4,7 +4,7 @@ import isAuth from '../middleware/isAuth';
 const router: Router = express.Router();
 
 
-router.get('/users/search', isAuth, userCtrl.searchUser);
+router.get('/search', isAuth, userCtrl.searchUser);
 
 
 export default router;

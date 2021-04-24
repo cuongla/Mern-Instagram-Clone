@@ -2,7 +2,7 @@ import React from 'react';
 
 interface AvatarProps {
     src: string
-    theme: boolean
+    theme?: boolean
     size: string
 }
 

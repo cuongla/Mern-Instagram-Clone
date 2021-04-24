@@ -2,12 +2,11 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { navLinksProps } from './NavLinks';
 import { RootState } from 'store';
 import { logout } from 'store/actions/authActions';
 import { navLinks } from './NavLinks';
 import { THEME } from 'store/reducers/themeReducers';
-import Avatar from 'components/Avatar';
+import Avatar from 'components/reusable/Avatar';
 
 
 const Menu: React.FC = () => {

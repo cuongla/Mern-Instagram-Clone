@@ -7,7 +7,7 @@ const Header = () => {
         <div className="header bg-light">
             <nav className="navbar navbar-expand-lg navbar-light bg-light justify-content-between align-middle">
                 <Link 
-                    className="bg-light logo" 
+                    className="navbar-brand logo" 
                     to="/">
                     <h1>Instakram</h1>
                 </Link>

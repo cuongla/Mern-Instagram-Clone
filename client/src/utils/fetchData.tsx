@@ -6,7 +6,7 @@ export const getDataAPI = async (url: string, token?: string) => {
             Authorization: token
         }
     });
-
+    console.log(res);
     return res;
 }
 
