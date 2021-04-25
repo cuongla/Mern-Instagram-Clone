@@ -7,6 +7,8 @@ import { Profile } from 'store/types/userTypes';
 import { IParams } from 'typings/params';
 import Avatar from 'components/reusable/Avatar';
 import { getProfileUsers } from 'store/actions/profileActions';
+import EditProfile from './EditProfile';
+import FollowBtn from './FollowBtn'
 
 const UserInfo = () => {
     const dispatch = useDispatch();
@@ -14,6 +16,7 @@ const UserInfo = () => {
     const { auth, profile } = useSelector((state: RootState) => state);
 
     const [userData, setUserData] = useState<Profile[]>([]);
+    const [onEdit, setOnEdit] = useState(false);
 
     useEffect(() => {
         dispatch(getProfileUsers(profile.users, id, auth))
@@ -34,9 +37,19 @@ const UserInfo = () => {
                         <div className="info_content">
                             <div className="info_content_title">
                                 <h2>{user.username}</h2>
-                                <button className="btn btn-outline-info">
-                                    Edit Profile
-                        </button>
+                                {
+                                    user._id === auth.user._id 
+                                    ? (
+                                        <button 
+                                        className="btn btn-outline-info"
+                                        onClick={() => setOnEdit(true)}>
+                                        Edit Profile
+                                    </button>
+                                    )
+                                    : (
+                                        <FollowBtn />
+                                    )
+                                }
                             </div>
                             <div className="follow_btn">
                                 <span style={{ marginRight: '24px' }}>
@@ -57,6 +70,9 @@ const UserInfo = () => {
                             </a>
                             <p>{user.story}</p>
                         </div>
+                        {
+                            onEdit && <EditProfile setOnEdit={setOnEdit} />
+                        }
                     </div>
                 ))
             }

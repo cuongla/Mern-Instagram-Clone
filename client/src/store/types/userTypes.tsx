@@ -29,6 +29,15 @@ export interface ProfileState {
     loading: boolean
 }
 
+export interface EditProfileData {
+    fullname: string
+    mobile: string
+    address: string
+    website: string
+    story: string
+    gender: string
+}
+
 // actions
 interface SetLoadingUserAction {
     type: typeof profile_types.LOADING,
