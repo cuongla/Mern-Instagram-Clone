@@ -71,7 +71,7 @@
 
 .header .search_form .close_search {
     position: absolute;
-    top: 0;
+    top: 4px;
     right: 5px;
     cursor: pointer;
     font-weight: 900;
@@ -91,6 +91,15 @@
     max-height: calc(100vh - 150px);
     overflow: auto;
     margin-top: 3px;
+}
+
+.header .search_form .search-loading {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    width: 15px;
+    height: 15px;
+    transform: translateY(-50%);
 }
 
 /* ================= Responsive ================= */
