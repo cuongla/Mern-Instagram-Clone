@@ -45,7 +45,7 @@ export const register = (data: RegisterData) => async (dispatch: Dispatch<AuthAc
         dispatch({
             type: ALERT,
             payload: {
-                error: err.response.data.msg
+                error: err.response.data
             }
         });
     }
@@ -128,7 +128,7 @@ export const refreshToken = () => async (dispatch: Dispatch<AuthAction>) => {
             dispatch({
                 type: ALERT,
                 payload: {
-                    error: err.response.data.msg
+                    error: err.response
                 }
             });
         }

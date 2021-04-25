@@ -1,9 +1,8 @@
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'store';
 import { ALERT } from 'store/types/alertTypes';
 import { getDataAPI } from 'utils/fetchData';
-import { Link } from 'react-router-dom';
 import UserCard from 'components/reusable/UserCard';
 import { SearchResult } from 'typings/search';
 import LoadIcon from 'images/loading.gif';
@@ -86,7 +85,7 @@ const Search = () => {
                         )}
                         {
                             users
-                                .filter((a: SearchResult) => a._id === auth.user._id)
+                                .filter((a: SearchResult) => a._id !== auth.user._id)
                                 .map((user: SearchResult) => (
                                     <UserCard
                                         key={user._id}

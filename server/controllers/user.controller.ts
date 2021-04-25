@@ -19,6 +19,22 @@ const userCtrl = {
                 msg: err.message
             })
         }
+    },
+    getUser: async (req: IRequest, res: Response) => {
+        try {
+            const user = await User
+                .findById(req.params.id)
+                .select('-password')
+
+            // check user
+            if(!user) return res.status(400).json({ msg: 'User is not found. '});
+
+            res.json({user});
+        } catch(err) {
+            return res.status(500).json({
+                msg: err.message
+            })
+        }
     }
 }
 
