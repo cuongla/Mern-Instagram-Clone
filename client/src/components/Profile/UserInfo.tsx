@@ -20,7 +20,7 @@ const UserInfo = () => {
 
     useEffect(() => {
         dispatch(getProfileUsers(profile.users, id, auth))
-        const newData = profile.users.filter(user => user._id === id);
+        const newData = profile.users.filter((user: Profile) => user._id === id);
         setUserData(newData);
     }, [id, dispatch, profile, auth]);
 
@@ -38,26 +38,34 @@ const UserInfo = () => {
                             <div className="info_content_title">
                                 <h2>{user.username}</h2>
                                 {
-                                    user._id === auth.user._id 
-                                    ? (
-                                        <button 
-                                        className="btn btn-outline-info"
-                                        onClick={() => setOnEdit(true)}>
-                                        Edit Profile
-                                    </button>
-                                    )
-                                    : (
-                                        <FollowBtn />
-                                    )
+                                    user._id === auth.user._id
+                                        ? (
+                                            <button
+                                                className="btn btn-outline-info"
+                                                onClick={() => setOnEdit(true)}>
+                                                Edit Profile
+                                            </button>
+                                        )
+                                        : (
+                                            <FollowBtn user={user} />
+                                        )
                                 }
                             </div>
                             <div className="follow_btn">
                                 <span style={{ marginRight: '24px' }}>
-                                    {user.followers.length} Followers
-                        </span>
+                                    {
+                                        user._id === auth.user._id
+                                            ? auth.user.followers.length
+                                            : user.followers.length
+                                    } Followers
+                                </span>
                                 <span style={{ marginLeft: '24px' }}>
-                                    {user.followers.length} Following
-                        </span>
+                                    {
+                                        user._id === auth.user._id
+                                            ? auth.user.following.length
+                                            : user.following.length
+                                    } Following
+                                </span>
                             </div>
                             <h6>{user.fullname} - <span className="text-danger">{user.mobile}</span></h6>
                             <p className="m-0">{user.address}</p>

@@ -6,6 +6,7 @@ import { ALERT } from '../types/alertTypes';
 import { authTypes } from '../types/authTypes';
 import { imageUpload } from 'utils/imageUpload';
 import { patchhDataAPI } from 'utils/fetchData';
+import { deleteData, editData } from 'store/actions/globalActions';
 
 export const getProfileUsers = (users: Profile[], id: string, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
     if (users.every(user => user._id !== id)) {
@@ -85,4 +86,49 @@ export const updateProfileUser = (userData: any, avatar: any, auth: AuthState) =
             }
         })
     }
+}
+
+export const follow = (users: Profile[], user: Profile, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
+    let newUser = { ...user, followers: [...user.followers, auth.user] };
+
+    // follow user
+    dispatch({
+        type: profile_types.FOLLOW,
+        payload: newUser
+    });
+
+    dispatch({
+        type: authTypes.AUTH,
+        payload: {
+            ...auth,
+            user: {
+                ...auth.user,
+                following: [...auth.user!.following, newUser]
+            }
+        }
+    })
+}
+
+export const unfollow = (users: Profile[], user: Profile, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
+    let newUser = {
+        ...user,
+        followers: deleteData(user.followers, (auth.user as Profile)._id)
+    };
+
+    // unfollow user
+    dispatch({
+        type: profile_types.UNFOLLOW,
+        payload: newUser
+    });
+
+    dispatch({
+        type: authTypes.AUTH,
+        payload: {
+            ...auth,
+            user: {
+                ...auth.user,
+                following: deleteData((auth.user as Profile).following, newUser._id)
+            }
+        }
+    })
 }

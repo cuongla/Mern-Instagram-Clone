@@ -1,6 +1,8 @@
 export const profile_types = {
     LOADING: 'LOADING',
-    GET_USER: 'GET_USER'
+    GET_USER: 'GET_USER',
+    FOLLOW: 'FOLLOW',
+    UNFOLLOW: 'UNFOLLOW'
 }
 
 export interface User {
@@ -12,6 +14,8 @@ export interface User {
     password: string
     gender: string
     avatar: string
+    followers: Profile[]
+    following: Profile[]
 }
 
 export interface Profile extends User {
@@ -19,8 +23,6 @@ export interface Profile extends User {
     story: string
     website: string
     address: string
-    followers: Profile[]
-    followings: Profile[]
 }
 
 export interface ProfileState {
@@ -49,4 +51,14 @@ interface GetUserAction {
     payload: any
 }
 
-export type ProfileActions = SetLoadingUserAction | GetUserAction;
+interface FollowUserAction {
+    type: typeof profile_types.FOLLOW,
+    payload: any
+}
+
+interface UnfollowUserAction {
+    type: typeof profile_types.UNFOLLOW,
+    payload: any
+}
+
+export type ProfileActions = SetLoadingUserAction | GetUserAction | FollowUserAction | UnfollowUserAction;
