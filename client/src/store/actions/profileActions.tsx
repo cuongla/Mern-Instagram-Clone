@@ -3,10 +3,12 @@ import { AuthState } from 'store/types/authTypes';
 import { Profile, ProfileActions, profile_types } from '../types/userTypes';
 import { getDataAPI } from 'utils/fetchData';
 import { ALERT } from '../types/alertTypes';
-
+import { authTypes } from '../types/authTypes';
+import { imageUpload } from 'utils/imageUpload';
+import { patchhDataAPI } from 'utils/fetchData';
 
 export const getProfileUsers = (users: Profile[], id: string, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
-    if(users.every(user => user._id !== id)) {
+    if (users.every(user => user._id !== id)) {
         try {
             dispatch({ type: profile_types.LOADING, payload: true });
 
@@ -19,7 +21,7 @@ export const getProfileUsers = (users: Profile[], id: string, auth: AuthState) =
 
             // stop loading
             dispatch({ type: profile_types.LOADING, payload: false });
-        } catch(err) {
+        } catch (err) {
             dispatch({
                 type: ALERT,
                 payload: {
@@ -27,5 +29,60 @@ export const getProfileUsers = (users: Profile[], id: string, auth: AuthState) =
                 }
             })
         }
+    }
+}
+
+export const updateProfileUser = (userData: any, avatar: any, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
+    if (!userData.fullname) return dispatch({
+        type: ALERT,
+        payload: { error: 'Please add your full name.' }
+    });
+
+    if (userData.fullname.length > 25) return dispatch({
+        type: ALERT,
+        payload: { error: 'Your full name is too long.' }
+    });
+
+    if (userData.story.length > 200) return dispatch({
+        type: ALERT,
+        payload: { error: 'Your story should be between 0 - 200 characters.' }
+    });
+
+    try {
+        let media;
+        dispatch({ type: ALERT, payload: ({ loading: true }) });
+
+        // uploading image
+        if (avatar) media = await imageUpload([avatar]);
+
+        // edit form
+        const res = await patchhDataAPI(
+            `user/${auth.user?._id}`,
+            {
+                ...userData,
+                avatar: avatar ? (media as any)[0].url : auth.user?.avatar
+            }
+            , auth.token);
+
+        dispatch({
+            type: authTypes.AUTH,
+            payload: {
+                ...auth,
+                user: {
+                    ...auth.user,
+                    ...userData,
+                    avatar: avatar ? (media as any)[0].url : auth.user?.avatar,
+                }
+            }
+        })
+
+        dispatch({ type: ALERT, payload: { success: res.data.msg } });
+    } catch (err) {
+        dispatch({
+            type: ALERT,
+            payload: {
+                error: err.response.data.msg
+            }
+        })
     }
 }

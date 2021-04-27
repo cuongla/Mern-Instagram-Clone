@@ -1,8 +1,9 @@
-import React, { ChangeEvent, useState, useEffect } from 'react'
+import React, { ChangeEvent, useState, useEffect, FormEvent } from 'react'
 import { EditProfileData } from 'store/types/userTypes'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { checkImage } from 'utils/imageUpload';
+import { updateProfileUser } from 'store/actions/profileActions';
 
 interface EditProfileProps {
     setOnEdit: any
@@ -18,7 +19,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ setOnEdit }) => {
         gender: '',
     }
     const [userData, setUserData] = useState(initState);
-    const { fullname, mobile, address, website, story } = userData;
+    const { fullname, mobile, address, website, story, gender } = userData;
     const [avatar, setAvatar] = useState();
     const { auth, theme } = useSelector((state: RootState) => state);
     const dispatch = useDispatch();
@@ -48,6 +49,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ setOnEdit }) => {
         setUserData({ ...userData, [name]: value });
     };
 
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        dispatch(updateProfileUser(userData, avatar, auth));
+        setOnEdit(false);
+    }
+
     return (
         <div className="edit_profile">
             <button
@@ -55,7 +62,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ setOnEdit }) => {
                 onClick={() => setOnEdit(false)}>
                 Close
             </button>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="info_avatar">
                     <img
                         src={avatar ?
@@ -143,7 +150,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ setOnEdit }) => {
                         id="gender"
                         className="custom-select text-capitalize"
                         onChange={handleInput}
-                        style={{ width: '100%' }}>
+                        style={{ width: '100%' }}
+                        value={gender}>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="other">Other</option>

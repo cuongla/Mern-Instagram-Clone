@@ -23,8 +23,8 @@ export const postDataAPI = async (url: string, data?: any, token?: string) => {
     return res;
 }
 
-export const putDataAPI = async (url: string, data: any, token: string) => {
-    const res = await axios.post(`/api/${url}`,
+export const patchhDataAPI = async (url: string, data: any, token: string) => {
+    const res = await axios.patch(`/api/${url}`,
         data,
         {
             headers: {
@@ -32,9 +32,9 @@ export const putDataAPI = async (url: string, data: any, token: string) => {
             }
         }
     );
-
     return res;
 }
+
 
 export const deleteDataAPI = async (url: string, token: string) => {
     const res = await axios.delete(`/api/${url}`,

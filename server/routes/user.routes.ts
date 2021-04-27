@@ -8,4 +8,6 @@ router.get('/search', isAuth, userCtrl.searchUser);
 
 router.get('/user/:id', isAuth, userCtrl.getUser);
 
+router.patch('/user/:id', isAuth, userCtrl.updateUser);
+
 export default router;
