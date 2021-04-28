@@ -12,6 +12,7 @@ const FollowBtn: React.FC<FollowBtnProps> = ({ user }) => {
     const dispatch = useDispatch();
     const { auth, profile } = useSelector((state: RootState) => state);
     const [followed, setFollowed] = useState(false);
+    const [load, setLoad] = useState(false);
 
     useEffect(() => {
         if(auth.user.following.find((item: any) => item._id === user._id)) {
@@ -19,14 +20,22 @@ const FollowBtn: React.FC<FollowBtnProps> = ({ user }) => {
         }
     }, [auth.user.following, user._id]);
 
-    const handleFollow = () => {
+    const handleFollow = async () => {
+        if(load) return;
+
         setFollowed(true);
-        dispatch(follow(profile.users, user, auth));
+        setLoad(true);
+        await dispatch(follow(profile.users, user, auth));
+        setLoad(false);
     }
 
-    const handleUnfollow = () => {
+    const handleUnfollow = async () => {
+        if(load) return;
+
         setFollowed(false);
+        setLoad(true);
         dispatch(unfollow(profile.users, user, auth));
+        setLoad(false);
     }
 
     return (

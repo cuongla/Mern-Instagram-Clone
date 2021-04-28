@@ -1,24 +1,29 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { SearchResult } from 'typings/search';
 import Avatar from './Avatar';
 import { Link } from 'react-router-dom';
 
 interface UserCardProps {
     user: SearchResult
-    border: string
-    handleClose: () => void
+    border?: string
+    handleClose?: () => void
+    setShowFollowers?: any
+    setShowFollowing?: any
+    children?: ReactNode
 }
 
-const UserCard: React.FC<UserCardProps> = ({ user, border, handleClose }) => {
+const UserCard: React.FC<UserCardProps> = ({ children, user, border, handleClose, setShowFollowers, setShowFollowing }) => {
     const handleCloseAll = () => {
         if(handleClose) handleClose();
+        if(setShowFollowers) setShowFollowers(false);
+        if(setShowFollowing) setShowFollowing(false);
     }
 
     return(
-        <div className={`d-flex p-2 align-item-center ${border}`}>
+        <div className={`d-flex p-2 align-items-center justify-content-between ${border}`}>
             <div>
                 <Link
-                    className="d-flex align-item-center"
+                    className="d-flex align-items-center"
                     to={`/profile/${user._id}`}
                     onClick={handleCloseAll}>
                     <Avatar src={user.avatar} size="big-avatar" />
@@ -30,6 +35,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, border, handleClose }) => {
                     </div>
                 </Link>
             </div>
+            { children }
         </div>
     )
 }

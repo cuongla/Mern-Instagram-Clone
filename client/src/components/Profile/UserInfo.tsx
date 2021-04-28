@@ -9,6 +9,8 @@ import Avatar from 'components/reusable/Avatar';
 import { getProfileUsers } from 'store/actions/profileActions';
 import EditProfile from './EditProfile';
 import FollowBtn from './FollowBtn'
+import Followers from './Followers';
+import Following from './Following';
 
 const UserInfo = () => {
     const dispatch = useDispatch();
@@ -17,6 +19,9 @@ const UserInfo = () => {
 
     const [userData, setUserData] = useState<Profile[]>([]);
     const [onEdit, setOnEdit] = useState(false);
+    const [showFollowers, setShowFollowers] = useState(false);
+    const [showFollowing, setShowFollowing] = useState(false);
+
 
     useEffect(() => {
         dispatch(getProfileUsers(profile.users, id, auth))
@@ -52,14 +57,18 @@ const UserInfo = () => {
                                 }
                             </div>
                             <div className="follow_btn">
-                                <span style={{ marginRight: '24px' }}>
+                                <span
+                                    onClick={() => setShowFollowers(true)}
+                                    style={{ marginRight: '24px' }}>
                                     {
                                         user._id === auth.user._id
                                             ? auth.user.followers.length
                                             : user.followers.length
                                     } Followers
                                 </span>
-                                <span style={{ marginLeft: '24px' }}>
+                                <span
+                                    onClick={() => setShowFollowing(true)}
+                                    style={{ marginLeft: '24px' }}>
                                     {
                                         user._id === auth.user._id
                                             ? auth.user.following.length
@@ -81,6 +90,20 @@ const UserInfo = () => {
                         {
                             onEdit && <EditProfile setOnEdit={setOnEdit} />
                         }
+                        {
+                            showFollowers && (
+                                <Followers
+                                    users={user.followers}
+                                    setShowFollowers={setShowFollowers} />
+                            )
+                        }
+                        {
+                            showFollowing && (
+                                <Following
+                                    users={user.following}
+                                    setShowFollowing={setShowFollowing} />
+                            )
+                        }
                     </div>
                 ))
             }
@@ -88,17 +111,4 @@ const UserInfo = () => {
     )
 }
 
-export default UserInfo
-
-
-// {
-//     userData.map((user: any) => (
-//         <div
-//             key={user._id} 
-//             className="info_container">
-//                 <Avatar 
-//                     src={user.avatar}
-//                     size="extra-big-avatar" />
-//         </div>
-//     ))
-// }
+export default UserInfo;

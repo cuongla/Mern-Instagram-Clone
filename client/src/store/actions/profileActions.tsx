@@ -90,6 +90,21 @@ export const updateProfileUser = (userData: any, avatar: any, auth: AuthState) =
 
 export const follow = (users: Profile[], user: Profile, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
     let newUser = { ...user, followers: [...user.followers, auth.user] };
+    if(users.every(item => item._id !== user._id)) {
+        newUser = {
+            ...user,
+            followers: [...user.followers, auth.user]
+        }
+    } else {
+        users.forEach(item => {
+            if(item._id === user._id) {
+                newUser = {
+                    ...item,
+                    followers: [...item.followers, auth.user]
+                }
+            }
+        })
+    }
 
     // follow user
     dispatch({
@@ -106,14 +121,37 @@ export const follow = (users: Profile[], user: Profile, auth: AuthState) => asyn
                 following: [...auth.user!.following, newUser]
             }
         }
-    })
+    });
+
+    // update in db
+    try {
+        await patchhDataAPI(`user/${user._id}/follow`, null, auth.token);
+    } catch(err) {
+        dispatch({
+            type: ALERT,
+            payload: { error: err.response.data.msg }
+        })
+    }
 }
 
 export const unfollow = (users: Profile[], user: Profile, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
-    let newUser = {
-        ...user,
-        followers: deleteData(user.followers, (auth.user as Profile)._id)
-    };
+    let newUser;
+
+    if(users.every(item => item._id !== user._id)) {
+        newUser = {
+            ...user,
+            followers: deleteData(user.followers, (auth.user as Profile)._id)
+        }
+    } else {
+        users.forEach(item => {
+            if(item._id === user._id) {
+                newUser = {
+                    ...item,
+                    followers: deleteData(item.followers, (auth.user as Profile)._id)
+                }
+            }
+        })
+    }
 
     // unfollow user
     dispatch({
@@ -127,8 +165,18 @@ export const unfollow = (users: Profile[], user: Profile, auth: AuthState) => as
             ...auth,
             user: {
                 ...auth.user,
-                following: deleteData((auth.user as Profile).following, newUser._id)
+                following: deleteData((auth.user as Profile).following, (newUser as Profile)._id)
             }
         }
-    })
+    });
+
+        // update in db
+        try {
+            await patchhDataAPI(`user/${user._id}/unfollow`, null, auth.token);
+        } catch(err) {
+            dispatch({
+                type: ALERT,
+                payload: { error: err.response.data.msg }
+            })
+        }
 }
