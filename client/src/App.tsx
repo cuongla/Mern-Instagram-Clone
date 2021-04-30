@@ -7,17 +7,18 @@ import { RootState } from 'store';
 // components
 import MaintRouter from './MaintRouter';
 import Home from 'pages/Home';
-import Alert from 'components/Alert';
-import Header from 'components/Header';
+import Alert from 'components/alert';
+import Header from 'components/header';
 import Login from 'pages/Login';
 import Register from 'pages/Register';
+import StatusModal from 'components/home/StatusModal';
 
 // route
 import PrivateRoute from 'router/PrivateRoute';
 
 
 function App() {
-  const { auth } = useSelector((state: RootState) => state);
+  const { auth, status } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,6 +34,7 @@ function App() {
       <div className="App">
         <div className="main">
           {auth.token && <Header />}
+          {status && <StatusModal />}
           <Route
             exact
             path="/"

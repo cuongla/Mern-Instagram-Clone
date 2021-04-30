@@ -2,7 +2,8 @@ export const profile_types = {
     LOADING: 'LOADING',
     GET_USER: 'GET_USER',
     FOLLOW: 'FOLLOW',
-    UNFOLLOW: 'UNFOLLOW'
+    UNFOLLOW: 'UNFOLLOW',
+    STATUS: 'STATUS'
 }
 
 export interface User {
@@ -40,6 +41,7 @@ export interface EditProfileData {
     gender: string
 }
 
+
 // actions
 interface SetLoadingUserAction {
     type: typeof profile_types.LOADING,
@@ -61,4 +63,9 @@ interface UnfollowUserAction {
     payload: any
 }
 
-export type ProfileActions = SetLoadingUserAction | GetUserAction | FollowUserAction | UnfollowUserAction;
+interface StatusAction {
+    type: typeof profile_types.STATUS,
+    payload: boolean
+}
+
+export type ProfileActions = SetLoadingUserAction | GetUserAction | FollowUserAction | UnfollowUserAction | StatusAction;

@@ -6,7 +6,7 @@ import { ALERT } from '../types/alertTypes';
 import { authTypes } from '../types/authTypes';
 import { imageUpload } from 'utils/imageUpload';
 import { patchhDataAPI } from 'utils/fetchData';
-import { deleteData, editData } from 'store/actions/globalActions';
+import { deleteData } from 'store/actions/globalActions';
 
 export const getProfileUsers = (users: Profile[], id: string, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
     if (users.every(user => user._id !== id)) {

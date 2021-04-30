@@ -36,9 +36,12 @@ img {
     object-fit: cover !important;
 }
 
+@import url('./home.css');
 @import url('./auth.css');
 @import url('./loading.css');
 @import url('./header.css');
 @import url('./avatar.css');
 @import url('./search.css');
 @import url('./profile.css');
+@import url('./status_modal.css');
+

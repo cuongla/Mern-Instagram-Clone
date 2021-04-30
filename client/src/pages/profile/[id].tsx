@@ -1,6 +1,6 @@
 import React from 'react'
-import UserInfo from 'components/Profile/UserInfo';
-import UserPosts from 'components/Profile/UserPosts';
+import UserInfo from 'components/profile/UserInfo';
+import UserPosts from 'components/profile/UserPosts';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import LoadIcon from 'images/loading.gif';
