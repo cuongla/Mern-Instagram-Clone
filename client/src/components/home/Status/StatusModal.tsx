@@ -1,8 +1,9 @@
-import React, { ChangeEvent, useState, useRef } from 'react'
+import React, { ChangeEvent, useState, useRef, FormEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store';
 import { ALERT } from 'store/types/alertTypes';
 import { profile_types } from 'store/types/userTypes';
+import { createPost } from 'store/actions/postActions';
 
 const StatusModal = () => {
     const dispatch = useDispatch();
@@ -75,12 +76,30 @@ const StatusModal = () => {
 
     const handleStopStream = () => {
         tracks.stop();
-        setStream(false);        
+        setStream(false);
     }
+
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        if (images.length === 0) return dispatch({
+            type: ALERT,
+            payload: { error: 'Please add your photo.' }
+        });
+
+        // post
+        dispatch(createPost(content, images, auth));
+
+
+        // clear form & close form
+        setContent('');
+        setImages([]);
+        if(tracks) tracks.stop();
+        dispatch({ type: profile_types.STATUS, payload: false });
+    };
 
     return (
         <div className="status_modal">
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="status_header">
                     <h5 className="m-0">Create Post</h5>
                     <span onClick={() => dispatch({
@@ -123,7 +142,7 @@ const StatusModal = () => {
                                     height="100%"
                                     style={{ filter: theme ? 'invert(1)' : 'invert(0)' }} />
                                 <span onClick={handleStopStream}>&times;</span>
-                                <canvas 
+                                <canvas
                                     ref={refCanvas}
                                     style={{ display: 'none' }} />
                             </div>
@@ -143,14 +162,14 @@ const StatusModal = () => {
                                             className="fas fa-camera"
                                             onClick={handleStream} />
                                         <div className="file_upload">
-                                        <i className="fas fa-image" />
-                                        <input
-                                            type="file"
-                                            name="file"
-                                            id="file"
-                                            multiple
-                                            accept="image/*"
-                                            onChange={handleImageChange} />
+                                            <i className="fas fa-image" />
+                                            <input
+                                                type="file"
+                                                name="file"
+                                                id="file"
+                                                multiple
+                                                accept="image/*"
+                                                onChange={handleImageChange} />
                                         </div>
                                     </>
                                 )
@@ -158,7 +177,9 @@ const StatusModal = () => {
                     </div>
                 </div>
                 <div className="status_footer">
-                    <button className="btn btn-secondary w-100">
+                    <button
+                        type="submit"
+                        className="btn btn-secondary w-100">
                         Post
                     </button>
                 </div>

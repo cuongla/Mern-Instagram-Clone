@@ -11,7 +11,7 @@ import Alert from 'components/alert';
 import Header from 'components/header';
 import Login from 'pages/Login';
 import Register from 'pages/Register';
-import StatusModal from 'components/home/StatusModal';
+import StatusModal from 'components/home/Status/StatusModal';
 
 // route
 import PrivateRoute from 'router/PrivateRoute';

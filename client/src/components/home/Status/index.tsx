@@ -12,7 +12,7 @@ const Status = () => {
     return (
         <div className="status my-3 d-flex">
             <Avatar src={auth.user.avatar} size="big-avatar" />
-            <button 
+            <button
                 className="statusBtn flex-fill"
                 onClick={() => dispatch({
                     type: profile_types.STATUS,
@@ -24,4 +24,4 @@ const Status = () => {
     )
 }
 
-export default Status
+export default Status;

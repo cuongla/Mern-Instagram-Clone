@@ -9,6 +9,8 @@ import profileReducer from './reducers/profileReducer';
 import alertReducer from './reducers/alertReducer';
 import themeReducer from './reducers/themeReducers';
 import statusReducer from './reducers/statusReducer';
+import postReducer from './reducers/postReducer';
+
 
 
 const rootReducer = combineReducers({
@@ -16,7 +18,8 @@ const rootReducer = combineReducers({
     alert: alertReducer,
     theme: themeReducer,
     profile: profileReducer,
-    status: statusReducer
+    status: statusReducer,
+    homePost: postReducer
 })
 
 const store = createStore(
