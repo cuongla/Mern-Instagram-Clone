@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { refreshToken } from 'store/actions/authActions';
 import { RootState } from 'store';
+import { getPosts } from 'store/actions/postActions';
 
 // components
 import MaintRouter from './MaintRouter';
@@ -24,6 +25,10 @@ function App() {
   useEffect(() => {
     dispatch(refreshToken())
   }, [dispatch]);
+
+  useEffect(() => {
+    auth.token && dispatch(getPosts(auth.token));
+  }, [auth.token, dispatch]);
 
   return (
     <Router>

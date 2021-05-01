@@ -10,5 +10,6 @@ export interface IPost extends Document {
     images: any[]
     likes: IUser[]
     comments: any[]
-    user: IUser
+    user: IUser | IUser[]
 }
+ 

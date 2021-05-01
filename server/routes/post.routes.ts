@@ -4,7 +4,8 @@ import isAuth from '../middleware/isAuth';
 const router: Router = express.Router();
 
 router.route('/posts')
-    .post(isAuth, postCtrl.createPost);
+    .post(isAuth, postCtrl.createPost)
+    .get(isAuth, postCtrl.getPosts)
 
 
 export default router;

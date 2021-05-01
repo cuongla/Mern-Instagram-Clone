@@ -1,7 +1,10 @@
 import { PostAction, PostState, post_types } from 'store/types/postTypes';
 
 const initialState: PostState = {
-    posts: []
+    loading: false,
+    posts: [],
+    result: 0,
+    page: 2
 };
 
 const authReducer = (state = initialState, action: PostAction) => {
@@ -10,6 +13,18 @@ const authReducer = (state = initialState, action: PostAction) => {
             return {
                 ...state,
                 posts: [...state.posts, action.payload]
+            }
+        case post_types.LOADING_POST: 
+            return {
+                ...state,
+                loading: action.payload
+            }
+        case post_types.GET_POSTS:
+            return {
+                ...state,
+                result: action.payload.result,
+                page: action.payload.page,
+                posts: action.payload.posts
             }
         default:
             return state;

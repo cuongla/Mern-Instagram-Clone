@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 import { imageUpload } from 'utils/imageUpload';
-import { postDataAPI } from 'utils/fetchData';
+import { getDataAPI, postDataAPI } from 'utils/fetchData';
 import { AuthState } from 'store/types/authTypes';
 import { PostAction, post_types } from 'store/types/postTypes';
 import { ALERT } from 'store/types/alertTypes';
@@ -31,6 +31,30 @@ export const createPost = (content: string, images: any[], auth: AuthState) => a
         });
 
         dispatch({ type: ALERT, payload: { loading: false } });
+    } catch (err) {
+        dispatch({
+            type: ALERT,
+            payload: {
+                error: err.response.data.msg
+            }
+        })
+    }
+}
+
+export const getPosts = (token: string) => async (dispatch: Dispatch<PostAction>) => {
+    try {
+        dispatch({ type: post_types.LOADING_POST, payload: true});
+
+        // get data
+        const res = await getDataAPI('posts', token);
+        console.log(res.data);
+        dispatch({
+            type: post_types.GET_POSTS,
+            payload: res.data
+        })
+
+
+        dispatch({ type: post_types.LOADING_POST, payload: false });
     } catch (err) {
         dispatch({
             type: ALERT,
