@@ -5,6 +5,7 @@ export const post_types = {
     CREATE_POST: 'CREATE_POST',
     LOADING_POST: 'LOADING_POST',
     GET_POSTS: 'GET_POSTS',
+    UPDATE_POST: 'UPDATE_POST',
 }
 
 export interface PostState {
@@ -47,4 +48,9 @@ interface GetPostsAction {
     payload: PostState
 }
 
-export type PostAction = CreatePostAction | LoadingPostAction | GetPostsAction;
+interface UpdatePostAction {
+    type: typeof post_types.UPDATE_POST,
+    payload: PostState
+}
+
+export type PostAction = CreatePostAction | LoadingPostAction | GetPostsAction | UpdatePostAction;

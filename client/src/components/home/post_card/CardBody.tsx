@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { PostData } from 'store/types/postTypes'
-import Carousel from 'components/reusable/Carousel';
+import Carousel from './Carousel';
 
 export interface PostCardProps {
     post: PostData

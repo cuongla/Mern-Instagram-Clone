@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 interface CarouselProps {
     images: any[]
@@ -6,6 +8,7 @@ interface CarouselProps {
 }
 
 const Carousel: React.FC<CarouselProps> = ({ id, images }) => {
+    const { theme } = useSelector((state: RootState) => state);
     const isActive = (index: number) => index === 0 && 'active';
 
     return (
@@ -16,11 +19,14 @@ const Carousel: React.FC<CarouselProps> = ({ id, images }) => {
             <div className="carousel-inner">
                 {
                     images.map((image, index) => (
-                        <div key={index} className={`carousel-item ${isActive(index)}`}>
+                        <div 
+                            key={index} 
+                            className={`carousel-item ${isActive(index)}`}>
                             <img
                                 src={image.url}
                                 className="d-block w-100"
-                                alt={image.url} />
+                                alt={image.url}
+                                style={{ filter: theme ? 'invert(1)' : 'invert(0)'}} />
                         </div>
                     ))
                 }

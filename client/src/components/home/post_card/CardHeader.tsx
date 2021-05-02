@@ -2,16 +2,22 @@ import React from 'react'
 import { PostData } from 'store/types/postTypes'
 import Avatar from 'components/reusable/Avatar';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { RootState } from 'store';
+import { profile_types } from 'store/types/userTypes';
 
 export interface PostCardProps {
     post: PostData
 }
 
 const CardHeader: React.FC<PostCardProps> = ({ post }) => {
+    const dispatch = useDispatch();
     const { auth } = useSelector((state: RootState) => state);
+    
+    const handleEditPost = () => {
+        dispatch({ type: profile_types.STATUS, payload: {...post, onEdit: true}});
+    }
 
     return (
         <div className="card_header">
@@ -44,7 +50,9 @@ const CardHeader: React.FC<PostCardProps> = ({ post }) => {
                     {
                         auth.user._id === post.user._id &&
                         <>
-                            <div className="dropdown-item">
+                            <div 
+                                onClick={handleEditPost}
+                                className="dropdown-item">
                                 <span className="material-icons">
                                     create
                                     </span>
