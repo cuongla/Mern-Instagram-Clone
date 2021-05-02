@@ -10,8 +10,7 @@ import alertReducer from './reducers/alertReducer';
 import themeReducer from './reducers/themeReducers';
 import statusReducer from './reducers/statusReducer';
 import postReducer from './reducers/postReducer';
-
-
+import modalReducer from './reducers/modalReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -19,7 +18,8 @@ const rootReducer = combineReducers({
     theme: themeReducer,
     profile: profileReducer,
     status: statusReducer,
-    homePosts: postReducer
+    homePosts: postReducer,
+    modal: modalReducer
 })
 
 const store = createStore(

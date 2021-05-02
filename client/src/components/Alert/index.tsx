@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'store';
 import Loading from './Loading';
 import Toast from './Toast';
-import { ALERT } from 'store/types/alertTypes';
+import { AlertState, global_types } from 'store/types/globalTypes';
 
 const Alert = () => {
     const { alert } = useSelector((state: RootState) => state);
@@ -11,27 +11,27 @@ const Alert = () => {
 
     return (
         <div>
-            { alert.loading && <Loading />}
-            { alert.error &&
+            { (alert as AlertState).loading && <Loading />}
+            { (alert as AlertState).error &&
                 <Toast
                     msg={{
                         title: 'Error',
-                        body: alert.error
+                        body: (alert as AlertState).error
                     }}
                     handleShow={() => dispatch({
-                        type: ALERT,
+                        type: global_types.ALERT,
                         payload: {}
                     })}
                     bgColor='bg-danger' />
             }
-            { alert.msg &&
+            { (alert as AlertState).msg &&
                 <Toast
                     msg={{
                         title: 'Sucess',
-                        body: alert.msg
+                        body: (alert as AlertState).msg
                     }}
                     handleShow={() => dispatch({
-                        type: ALERT,
+                        type: global_types.ALERT,
                         payload: {}
                     })}
                     bgColor='bg-success' />

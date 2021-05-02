@@ -19,7 +19,7 @@ export interface PostData {
     _id?: string
     content: string
     images: any[]
-    likes?: User[]
+    likes: User[]
     comments?: any[]
     user: User
     createdAt?: Date | number

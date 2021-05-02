@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useState, useRef, FormEvent, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store';
-import { ALERT } from 'store/types/alertTypes';
 import { profile_types } from 'store/types/userTypes';
 import { createPost, updatePost } from 'store/actions/postActions';
+import { global_types } from 'store/types/globalTypes';
 
 const StatusModal = () => {
     const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const StatusModal = () => {
         })
 
         if (err) dispatch({
-            type: ALERT,
+            type: global_types.ALERT,
             error: err
         });
 
@@ -82,7 +82,7 @@ const StatusModal = () => {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (images.length === 0) return dispatch({
-            type: ALERT,
+            type: global_types.ALERT,
             payload: { error: 'Please add your photo.' }
         });
 

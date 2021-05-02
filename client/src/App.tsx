@@ -19,7 +19,7 @@ import PrivateRoute from 'router/PrivateRoute';
 
 
 function App() {
-  const { auth, status } = useSelector((state: RootState) => state);
+  const { auth, status, modal } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ function App() {
       <input
         id="theme"
         type="checkbox" />
-      <div className="App">
+      <div className={`App ${(status || modal) && `mode`}`}>
         <div className="main">
           {auth.token && <Header />}
           {status && <StatusModal />}

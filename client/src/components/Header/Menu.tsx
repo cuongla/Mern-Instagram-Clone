@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { logout } from 'store/actions/authActions';
 import { navLinks } from './NavLinks';
-import { THEME } from 'store/reducers/themeReducers';
 import Avatar from 'components/reusable/Avatar';
+import { global_types } from 'store/types/globalTypes';
 
 
 const Menu: React.FC = () => {
@@ -16,7 +16,7 @@ const Menu: React.FC = () => {
 
     const changeMode = () => {
         return dispatch({
-            type: THEME,
+            type: global_types.THEME,
             payload: !theme
         })
     }

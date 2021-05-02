@@ -5,13 +5,14 @@ import { Link } from 'react-router-dom';
 import { RootState } from 'store';
 import { RegisterData } from 'store/types/authTypes';
 import { register } from 'store/actions/authActions';
+import { AlertState } from 'store/types/globalTypes';
 
 
-const Register = () => {
+const Register: React.FC = () => {
     const history = useHistory();
     const dispatch = useDispatch();
     const { auth, alert } = useSelector((state: RootState) => state);
-    const alertError: RegisterData = alert.errMsg;
+    const alertError: RegisterData = (alert as AlertState).errMsg;
     const [typePass, setTypePass] = useState(false);
     const [userData, setUserData] = useState<RegisterData>({
         fullname: '',

@@ -10,6 +10,9 @@ router.route('/posts')
 router.route('/post/:id')
     .patch(isAuth, postCtrl.updatePost);
 
+router.patch('/post/:id/like', isAuth, postCtrl.likePost);
+router.patch('/post/:id/unlike', isAuth, postCtrl.unlikePost);
+
 
 
 export default router;

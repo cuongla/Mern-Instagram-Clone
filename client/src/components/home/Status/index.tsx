@@ -5,7 +5,7 @@ import { RootState } from 'store';
 import { profile_types } from 'store/types/userTypes';
 
 
-const Status = () => {
+const Status: React.FC = () => {
     const dispatch = useDispatch();
     const { auth } = useSelector((state: RootState) => state);
 

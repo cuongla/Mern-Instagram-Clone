@@ -69,6 +69,37 @@ const postCtrl = {
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
+    },
+    likePost: async (req: IRequest, res: Response) => {
+        try {
+            const post = await Posts.find({ _id: req.params.id, likes: req.user._id });
+            if (post.length > 0) return res.status(400).json({ msg: 'You  liked this post.' });
+
+            // update likes
+            await Posts
+                .findOneAndUpdate(
+                    { _id: req.params.id },
+                    { $push: { likes: req.user._id } },
+                    { new: true });
+
+            res.json({ msg: 'Liked Post!' })
+        } catch (err) {
+            return res.json(500).json({ msg: err.message });
+        }
+    },
+    unlikePost: async (req: IRequest, res: Response) => {
+        try {
+            // update likes
+            await Posts
+                .findOneAndUpdate(
+                    { _id: req.params.id },
+                    { $pull: { likes: req.user._id } },
+                    { new: true });
+
+            res.json({ msg: 'Unliked Post!' })
+        } catch (err) {
+            return res.json(500).json({ msg: err.message });
+        }
     }
 }
 

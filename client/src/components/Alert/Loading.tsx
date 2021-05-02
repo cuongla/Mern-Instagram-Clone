@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Loading = () => {
+const Loading: React.FC = () => {
     return (
         <div 
             className="position-fixed w-100 h-100 text-center loading"

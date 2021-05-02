@@ -36,6 +36,12 @@ img {
     object-fit: cover !important;
 }
 
+.mode {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
 @import url('./home.css');
 @import url('./auth.css');
 @import url('./loading.css');

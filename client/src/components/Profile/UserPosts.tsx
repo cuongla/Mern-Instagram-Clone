@@ -1,6 +1,6 @@
 import React from 'react'
 
-const UserPosts = () => {
+const UserPosts: React.FC = () => {
     return (
         <div>
             User Posts

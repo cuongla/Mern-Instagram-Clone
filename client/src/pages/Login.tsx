@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LoginData } from 'store/types/authTypes';
 import { RootState } from 'store';
 
-const Login = () => {
+const Login: React.FC = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const [userData, setUserData] = useState<LoginData>({

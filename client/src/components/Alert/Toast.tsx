@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 interface ToastProps {
     msg?: {
@@ -7,7 +7,7 @@ interface ToastProps {
     } 
     handleShow: () => void
     bgColor: string
-}
+};
 
 const Toast: React.FC<ToastProps> = ({ msg, handleShow, bgColor }) => {
     return (

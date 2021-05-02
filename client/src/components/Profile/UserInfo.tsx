@@ -11,8 +11,9 @@ import EditProfile from './EditProfile';
 import FollowBtn from './FollowBtn'
 import Followers from './Followers';
 import Following from './Following';
+import { global_types } from 'store/types/globalTypes';
 
-const UserInfo = () => {
+const UserInfo: React.FC = () => {
     const dispatch = useDispatch();
     const { id } = useParams<IParams>();
     const { auth, profile } = useSelector((state: RootState) => state);
@@ -28,6 +29,14 @@ const UserInfo = () => {
         const newData = profile.users.filter((user: Profile) => user._id === id);
         setUserData(newData);
     }, [id, dispatch, profile, auth]);
+
+    useEffect(() => {
+        if(showFollowers || showFollowing || onEdit) {
+            dispatch({ type: global_types.MODAL, payload: true })
+        } else {
+            dispatch({ type: global_types.MODAL, payload: false })
+        }
+    }, [dispatch, onEdit, showFollowers, showFollowing]);
 
     return (
         <div className="info">

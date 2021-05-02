@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import LoadIcon from '../images/loading.gif';
 
-const Home = () => {
+const Home: React.FC = () => {
     const { homePosts } = useSelector((state: RootState) => state);
 
     return (

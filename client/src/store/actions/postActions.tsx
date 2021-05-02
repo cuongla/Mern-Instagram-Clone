@@ -2,8 +2,8 @@ import { Dispatch } from 'react';
 import { imageUpload } from 'utils/imageUpload';
 import { getDataAPI, patchhDataAPI, postDataAPI } from 'utils/fetchData';
 import { AuthState } from 'store/types/authTypes';
-import { PostAction, post_types } from 'store/types/postTypes';
-import { ALERT } from 'store/types/alertTypes';
+import { PostAction, PostData, post_types } from 'store/types/postTypes';
+import { global_types } from 'store/types/globalTypes';
 
 interface IMedia {
     public_id: string
@@ -14,7 +14,7 @@ export const createPost = (content: string, images: any[], auth: AuthState) => a
     let media: IMedia[] = [];
 
     try {
-        dispatch({ type: ALERT, payload: { loading: true } });
+        dispatch({ type: global_types.ALERT, payload: { loading: true } });
 
         if (images.length > 0) media = await imageUpload(images);
         const res = postDataAPI(
@@ -28,13 +28,13 @@ export const createPost = (content: string, images: any[], auth: AuthState) => a
 
         dispatch({
             type: post_types.CREATE_POST,
-            payload: {...(await res).data.newPost, user: auth.user}
+            payload: { ...(await res).data.newPost, user: auth.user }
         });
 
-        dispatch({ type: ALERT, payload: { loading: false } });
+        dispatch({ type: global_types.ALERT, payload: { loading: false } });
     } catch (err) {
         dispatch({
-            type: ALERT,
+            type: global_types.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -44,7 +44,7 @@ export const createPost = (content: string, images: any[], auth: AuthState) => a
 
 export const getPosts = (token: string) => async (dispatch: Dispatch<PostAction>) => {
     try {
-        dispatch({ type: post_types.LOADING_POST, payload: true});
+        dispatch({ type: post_types.LOADING_POST, payload: true });
 
         // get data
         const res = await getDataAPI('posts', token);
@@ -58,7 +58,7 @@ export const getPosts = (token: string) => async (dispatch: Dispatch<PostAction>
         dispatch({ type: post_types.LOADING_POST, payload: false });
     } catch (err) {
         dispatch({
-            type: ALERT,
+            type: global_types.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -73,13 +73,13 @@ export const updatePost = (content: string, images: any[], auth: AuthState, stat
 
     // if no new images up;oad
     // keep the old one
-    if(status.content === content 
+    if (status.content === content
         && imgNewUrl.length === 0
         && imgOldUrl.length === status.images.length
     ) return;
-    
+
     try {
-        dispatch({ type: ALERT, payload: { loading: true } });
+        dispatch({ type: global_types.ALERT, payload: { loading: true } });
 
         if (imgNewUrl.length > 0) media = await imageUpload(imgNewUrl);
         const res = patchhDataAPI(
@@ -90,16 +90,55 @@ export const updatePost = (content: string, images: any[], auth: AuthState, stat
             },
             auth.token
         )
-        
+
         dispatch({
             type: post_types.UPDATE_POST,
             payload: (await res).data.newPost
         });
 
-        dispatch({ type: ALERT, payload: { success: (await res).data.msg }});
+        dispatch({ type: global_types.ALERT, payload: { success: (await res).data.msg } });
     } catch (err) {
         dispatch({
-            type: ALERT,
+            type: global_types.ALERT,
+            payload: {
+                error: err.response.data.msg
+            }
+        })
+    }
+}
+
+export const likePost = (post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+    const newPost = { ...post, likes: [...post.likes, auth.user] };
+
+    dispatch({
+        type: post_types.UPDATE_POST,
+        payload: newPost
+    });
+
+    try {
+        await patchhDataAPI(`post/${post._id}/like`, null, auth.token);
+    } catch (err) {
+        dispatch({
+            type: global_types.ALERT,
+            payload: {
+                error: err.response.data.msg
+            }
+        })
+    }
+}
+
+export const unlikePost = (post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+    const newPost = { ...post, likes: post.likes.filter(like => like._id !== auth.user!._id)};
+    dispatch({
+        type: post_types.UPDATE_POST,
+        payload: newPost
+    });
+
+    try {
+        await patchhDataAPI(`post/${post._id}/unlike`, null, auth.token);
+    } catch (err) {
+        dispatch({
+            type: global_types.ALERT,
             payload: {
                 error: err.response.data.msg
             }

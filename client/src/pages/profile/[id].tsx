@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import LoadIcon from 'images/loading.gif';
 
-const Profile = () => {
+const Profile: React.FC = () => {
     const { profile } = useSelector((state: RootState) => state);
 
 

@@ -2,7 +2,7 @@ import { Dispatch } from 'react';
 import { AuthState } from 'store/types/authTypes';
 import { Profile, ProfileActions, profile_types } from '../types/userTypes';
 import { getDataAPI } from 'utils/fetchData';
-import { ALERT } from '../types/alertTypes';
+import { global_types } from '../types/globalTypes';
 import { authTypes } from '../types/authTypes';
 import { imageUpload } from 'utils/imageUpload';
 import { patchhDataAPI } from 'utils/fetchData';
@@ -24,7 +24,7 @@ export const getProfileUsers = (users: Profile[], id: string, auth: AuthState) =
             dispatch({ type: profile_types.LOADING, payload: false });
         } catch (err) {
             dispatch({
-                type: ALERT,
+                type: global_types.ALERT,
                 payload: {
                     error: err.response.data.msg
                 }
@@ -35,23 +35,23 @@ export const getProfileUsers = (users: Profile[], id: string, auth: AuthState) =
 
 export const updateProfileUser = (userData: any, avatar: any, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
     if (!userData.fullname) return dispatch({
-        type: ALERT,
+        type: global_types.ALERT,
         payload: { error: 'Please add your full name.' }
     });
 
     if (userData.fullname.length > 25) return dispatch({
-        type: ALERT,
+        type: global_types.ALERT,
         payload: { error: 'Your full name is too long.' }
     });
 
     if (userData.story.length > 200) return dispatch({
-        type: ALERT,
+        type: global_types.ALERT,
         payload: { error: 'Your story should be between 0 - 200 characters.' }
     });
 
     try {
         let media;
-        dispatch({ type: ALERT, payload: ({ loading: true }) });
+        dispatch({ type: global_types.ALERT, payload: ({ loading: true }) });
 
         // uploading image
         if (avatar) media = await imageUpload([avatar]);
@@ -77,10 +77,10 @@ export const updateProfileUser = (userData: any, avatar: any, auth: AuthState) =
             }
         })
 
-        dispatch({ type: ALERT, payload: { success: res.data.msg } });
+        dispatch({ type: global_types.ALERT, payload: { success: res.data.msg } });
     } catch (err) {
         dispatch({
-            type: ALERT,
+            type: global_types.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -128,7 +128,7 @@ export const follow = (users: Profile[], user: Profile, auth: AuthState) => asyn
         await patchhDataAPI(`user/${user._id}/follow`, null, auth.token);
     } catch(err) {
         dispatch({
-            type: ALERT,
+            type: global_types.ALERT,
             payload: { error: err.response.data.msg }
         })
     }
@@ -175,7 +175,7 @@ export const unfollow = (users: Profile[], user: Profile, auth: AuthState) => as
             await patchhDataAPI(`user/${user._id}/unfollow`, null, auth.token);
         } catch(err) {
             dispatch({
-                type: ALERT,
+                type: global_types.ALERT,
                 payload: { error: err.response.data.msg }
             })
         }

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'store';
-import { ALERT } from 'store/types/alertTypes';
 import { getDataAPI } from 'utils/fetchData';
 import UserCard from 'components/reusable/UserCard';
 import { SearchResult } from 'typings/search';
 import LoadIcon from 'images/loading.gif';
+import { global_types } from 'store/types/globalTypes';
 
 const Search = () => {
     const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const Search = () => {
                     setUsers(res.data);
                 })
                 .catch(err => dispatch({
-                    type: ALERT,
+                    type: global_types.ALERT,
                     payload: {
                         error: ''
                     }
