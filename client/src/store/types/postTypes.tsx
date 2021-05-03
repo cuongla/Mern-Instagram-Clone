@@ -8,6 +8,7 @@ export const post_types = {
     UPDATE_POST: 'UPDATE_POST',
 }
 
+// post
 export interface PostState {
     posts: PostData[]
     result?: number
@@ -20,7 +21,7 @@ export interface PostData {
     content: string
     images: any[]
     likes: User[]
-    comments?: any[]
+    comments: CommentData[]
     user: User
     createdAt?: Date | number
 }
@@ -51,6 +52,16 @@ interface GetPostsAction {
 interface UpdatePostAction {
     type: typeof post_types.UPDATE_POST,
     payload: PostState
+}
+
+// comments
+export interface CommentData {
+    _id: string
+    content: string
+    reply: object
+    likes: User[]
+    user: User
+    createdAt?: Date | number
 }
 
 export type PostAction = CreatePostAction | LoadingPostAction | GetPostsAction | UpdatePostAction;

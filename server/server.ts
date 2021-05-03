@@ -10,6 +10,7 @@ const app = express();
 import AuthRoutes from './routes/auth.routes';
 import UserRoutes from './routes/user.routes';
 import PostRoutes from './routes/post.routes';
+import CommentRoutes from './routes/comment.routes';
 
 
 // middlewares
@@ -21,7 +22,7 @@ app.use(cookieParser());
 app.use('/api', AuthRoutes);
 app.use('/api', UserRoutes);
 app.use('/api', PostRoutes);
-
+app.use('/api', CommentRoutes);
 
 // connect to db
 mongoose.Promise = global.Promise
