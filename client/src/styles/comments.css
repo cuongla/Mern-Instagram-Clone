@@ -66,3 +66,9 @@
     margin-top: 7px;
     margin-left: 5px;
 }
+
+.comment_card .comment_content textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+}

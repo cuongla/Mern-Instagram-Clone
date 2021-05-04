@@ -6,13 +6,16 @@ interface CommentMenuProps {
     auth: AuthState
     post: PostData
     comment: CommentData
+    setOnEdit: any
 }
 
-const CommentMenu: React.FC<CommentMenuProps> = ({ auth, post, comment }) => {
+const CommentMenu: React.FC<CommentMenuProps> = ({ auth, post, comment, setOnEdit }) => {
     const MenuItem = () => {
         return(
             <>
-                <div className="dropdown-item">
+                <div 
+                    className="dropdown-item"
+                    onClick={() => setOnEdit(true)}>
                     <span className="material-icons">
                         create
                     </span> Edit
