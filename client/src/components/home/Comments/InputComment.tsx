@@ -7,25 +7,34 @@ import { createComment } from 'store/actions/commentActions';
 interface InputCommentsProps {
     children?: ReactNode
     post: PostData
+    onReply?: boolean
+    setOnReply?: any
+    commentId?: string
 }
 
-const InputComments: React.FC<InputCommentsProps> = ({ post, children }) => {
+const InputComment: React.FC<InputCommentsProps> = ({ post, children, onReply, setOnReply, commentId }) => {
     const dispatch = useDispatch();
     const { auth } = useSelector((state: RootState) => state);
     const [content, setContent] = useState('');
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        if(!content.trim()) return;
+        if(!content.trim()) {
+            if(setOnReply) return setOnReply(false);
+            return; 
+        }
 
         const newComment = {
             content,
             likes: [],
             user: auth.user,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            reply: onReply && commentId,
+            tag: onReply && auth.user
         }
 
         dispatch(createComment(post, newComment, auth));
+        if(setOnReply) return setOnReply(false);
     }
 
     return (
@@ -45,4 +54,4 @@ const InputComments: React.FC<InputCommentsProps> = ({ post, children }) => {
     )
 }
 
-export default InputComments
+export default InputComment;

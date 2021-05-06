@@ -8,15 +8,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'store';
 import CommentMenu from './CommentMenu';
 import { updateComment, likeComment, unlikeComment } from 'store/actions/commentActions';
+import InputComment from './InputComment';
 
 
 interface CommentCardProps {
     children?: ReactNode
     post: PostData
     comment: CommentData
+    commentId: string
 }
 
-const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post }) => {
+const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, commentId }) => {
     const dispatch = useDispatch();
     const { auth } = useSelector((state: RootState) => state);
     const [content, setContent] = useState('');
@@ -24,7 +26,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post }) =>
     const [isLike, setIsLike] = useState(false);
     const [onEdit, setOnEdit] = useState(false);
     const [loadLike, setLoadLike] = useState(false);
-
+    const [onReply, setOnReply] = useState<boolean>(false);
 
     useEffect(() => {
         setContent(comment.content);
@@ -60,6 +62,11 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post }) =>
 
         await dispatch(unlikeComment(comment, post, auth));
         setLoadLike(false);
+    }
+
+    const handleReply = () => {
+        if(onReply) return setOnReply(false);
+        setOnReply(true);
     }
 
     return (
@@ -117,6 +124,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post }) =>
                         <small className="comment_content-icon">
                             {comment.likes.length} likes
                         </small>
+
                         {
                             onEdit
                                 ? (
@@ -135,8 +143,10 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post }) =>
                                 )
                                 : (
                                     <small 
-                                        className="comment_content-icon">
-                                        reply
+                                        className="comment_content-icon"
+                                        onClick={handleReply}
+                                        >
+                                        {onReply ? 'cancel' : 'reply' }
                                     </small>
                                 )
                         }
@@ -156,6 +166,22 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post }) =>
                         setOnEdit={setOnEdit} />
                 </div>
             </div>
+            {
+                onReply && (
+                    <InputComment 
+                        post={post} 
+                        onReply={onReply} 
+                        setOnReply={setOnReply}
+                        commentId={comment._id}>
+                        <Link 
+                            to={`/profile/${auth.user._id}`}
+                            className="mr-1">
+                            @{auth.user.username}
+                        </Link>
+                    </InputComment>
+                )
+            }
+            {children}
         </div>
     )
 }

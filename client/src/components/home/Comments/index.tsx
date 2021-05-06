@@ -10,12 +10,18 @@ const Comments: React.FC<CommentsProps> = ({ post }) => {
     const [comments, setComments] = useState<CommentData[]>([]);
     const [showComments, setShowComments] = useState<CommentData[]>([]);
     const [next, setNext] = useState(2);
+    const [replyComments, setreplyComments] = useState([]);
 
     useEffect(() => {
         const filteredComments = post.comments.filter(comment => !comment.reply);
         setComments(filteredComments);
         setShowComments(filteredComments.slice(filteredComments.length - next));
     }, [next, post.comments]);
+
+    useEffect(() => {
+        const newRep = post.comments.filter(comment => comment.reply);
+        setreplyComments(newRep as any);
+    }, [post.comments])
 
     return (
         <div className="comments">

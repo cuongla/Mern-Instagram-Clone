@@ -16,7 +16,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             <CardHeader post={post} />
             <CardBody post={post} />
             <CardFooter post={post} />
-
             <Comments post={post} />
             <InputComments post={post} />
         </div>
