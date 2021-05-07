@@ -10,7 +10,7 @@ const Comments: React.FC<CommentsProps> = ({ post }) => {
     const [comments, setComments] = useState<CommentData[]>([]);
     const [showComments, setShowComments] = useState<CommentData[]>([]);
     const [next, setNext] = useState(2);
-    const [replyComments, setreplyComments] = useState([]);
+    const [replyComments, setreplyComments] = useState<any[]>([]);
 
     useEffect(() => {
         const filteredComments = post.comments.filter(comment => !comment.reply);
@@ -20,17 +20,20 @@ const Comments: React.FC<CommentsProps> = ({ post }) => {
 
     useEffect(() => {
         const newRep = post.comments.filter(comment => comment.reply);
-        setreplyComments(newRep as any);
+        setreplyComments(newRep);
+        console.log(newRep);
     }, [post.comments])
 
     return (
         <div className="comments">
             {
-                showComments.map(comment => (
+                showComments.map((comment, index) => (
                     <CommentDisplay
-                        key={comment._id}
+                        key={index}
                         comment={comment}
-                        post={post} />
+                        post={post}
+                        // @ts-ignore
+                        replyCm={replyComments.filter(item => item.reply === comment._id)} />
                 ))
             }
             {

@@ -1,18 +1,18 @@
 import React, { ChangeEvent, FormEvent, ReactNode, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { PostData } from 'store/types/postTypes'
+import { CommentData, PostData } from 'store/types/postTypes'
 import { createComment } from 'store/actions/commentActions';
 
 interface InputCommentsProps {
     children?: ReactNode
     post: PostData
+    targetComment?: CommentData
     onReply?: boolean
     setOnReply?: any
-    commentId?: string
 }
 
-const InputComment: React.FC<InputCommentsProps> = ({ post, children, onReply, setOnReply, commentId }) => {
+const InputComment: React.FC<InputCommentsProps> = ({ post, children, targetComment, onReply, setOnReply }) => {
     const dispatch = useDispatch();
     const { auth } = useSelector((state: RootState) => state);
     const [content, setContent] = useState('');
@@ -29,9 +29,10 @@ const InputComment: React.FC<InputCommentsProps> = ({ post, children, onReply, s
             likes: [],
             user: auth.user,
             createdAt: new Date().toISOString(),
-            reply: onReply && commentId,
-            tag: onReply && auth.user
+            reply: onReply && targetComment?._id,
+            tag: onReply && targetComment?.user
         }
+        console.log(onReply);
 
         dispatch(createComment(post, newComment, auth));
         if(setOnReply) return setOnReply(false);

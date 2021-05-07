@@ -26,17 +26,20 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, comm
     const [isLike, setIsLike] = useState(false);
     const [onEdit, setOnEdit] = useState(false);
     const [loadLike, setLoadLike] = useState(false);
-    const [onReply, setOnReply] = useState<boolean>(false);
+    const [onReply, setOnReply] = useState(false);
+    const [targetComment, setTargetComment] = useState<CommentData>();
 
     useEffect(() => {
         setContent(comment.content);
-        if(comment.likes.find(like => like._id === auth.user._id)) {
+        setIsLike(false);
+        setOnReply(false);
+        if (comment.likes.find(like => like._id === auth.user._id)) {
             setIsLike(true);
         }
     }, [auth.user._id, comment]);
 
     const handleUpdate = () => {
-        if(comment.content !== content) {
+        if (comment.content !== content) {
             dispatch(updateComment(comment, post, content, auth));
             setOnEdit(false);
         } else {
@@ -45,7 +48,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, comm
     }
 
     const handleLike = async () => {
-        if(loadLike) return;
+        if (loadLike) return;
 
         setIsLike(true);
         setLoadLike(true);
@@ -55,7 +58,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, comm
     }
 
     const handleUnlike = async () => {
-        if(loadLike) return;
+        if (loadLike) return;
 
         setIsLike(false);
         setLoadLike(true);
@@ -65,8 +68,13 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, comm
     }
 
     const handleReply = () => {
-        if(onReply) return setOnReply(false);
-        setOnReply(true);
+        if(onReply) {
+            setOnReply(false);
+        } else {
+            setOnReply(true);
+            // @ts-ignore
+            setTargetComment({...comment, commentId});
+        }
     }
 
     return (
@@ -96,6 +104,15 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, comm
                                 onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)} />
                             : (
                                 <div>
+                                    {
+                                        comment.tag && comment.tag._id === comment.user._id && (
+                                            <Link 
+                                                to={`profile/${comment.tag._id}`}
+                                                className="mr-1">
+                                                @{comment.tag.username}
+                                            </Link>
+                                        )
+                                    }
                                     <span>
                                         {
                                             content.length < 100
@@ -129,12 +146,12 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, comm
                             onEdit
                                 ? (
                                     <>
-                                        <small 
+                                        <small
                                             className="comment_content-icon"
                                             onClick={handleUpdate}>
                                             update
                                         </small>
-                                        <small  
+                                        <small
                                             className="comment_content-icon"
                                             onClick={() => setOnEdit(false)}>
                                             cancel
@@ -142,11 +159,11 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, comm
                                     </>
                                 )
                                 : (
-                                    <small 
+                                    <small
                                         className="comment_content-icon"
                                         onClick={handleReply}
-                                        >
-                                        {onReply ? 'cancel' : 'reply' }
+                                    >
+                                        {onReply ? 'cancel' : 'reply'}
                                     </small>
                                 )
                         }
@@ -162,21 +179,20 @@ const CommentCard: React.FC<CommentCardProps> = ({ children, comment, post, comm
                     <CommentMenu
                         post={post}
                         comment={comment}
-                        auth={auth}
                         setOnEdit={setOnEdit} />
                 </div>
             </div>
             {
                 onReply && (
-                    <InputComment 
-                        post={post} 
-                        onReply={onReply} 
-                        setOnReply={setOnReply}
-                        commentId={comment._id}>
-                        <Link 
-                            to={`/profile/${auth.user._id}`}
+                    <InputComment
+                        post={post}
+                        onReply={onReply}
+                        targetComment={targetComment}
+                        setOnReply={setOnReply}>
+                        <Link
+                            to={`/profile/${targetComment?.user._id}`}
                             className="mr-1">
-                            @{auth.user.username}
+                            @{targetComment?.user.username}
                         </Link>
                     </InputComment>
                 )

@@ -2,7 +2,7 @@ import { Dispatch } from 'react';
 import { AuthState } from "store/types/authTypes";
 import { global_types } from 'store/types/globalTypes';
 import { CommentData, PostAction, PostData, post_types } from "store/types/postTypes";
-import { patchhDataAPI, postDataAPI } from 'utils/fetchData';
+import { deleteDataAPI, patchhDataAPI, postDataAPI } from 'utils/fetchData';
 import { deleteData, editData } from './globalActions';
 
 
@@ -18,7 +18,11 @@ export const createComment = (post: PostData, newComment: any, auth: AuthState) 
     });
 
     try {
-        const data = { ...newComment, postId: post._id };
+        const data = {
+            ...newComment,
+            postId: post._id,
+            postUserId: post.user._id
+        };
         const res = await postDataAPI('comment', data, auth.token);
 
         const newData = { ...res.data.newComment, user: auth.user };
@@ -65,7 +69,7 @@ export const likeComment = (comment: CommentData, post: PostData, auth: AuthStat
 
     dispatch({ type: post_types.UPDATE_POST, payload: newPost });
 
-    try {   
+    try {
         await patchhDataAPI(`comment/${comment._id}/like`, null, auth.token);
     } catch (err) {
         dispatch({
@@ -87,6 +91,34 @@ export const unlikeComment = (comment: CommentData, post: PostData, auth: AuthSt
 
     try {
         await patchhDataAPI(`comment/${comment._id}/unlike`, null, auth.token);
+    } catch (err) {
+        dispatch({
+            type: global_types.ALERT,
+            payload: {
+                error: err.response.data.msg
+            }
+        })
+    }
+}
+
+export const deleteComment = (post: PostData, comment: CommentData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+    // @ts-ignore
+    const deleteArr = [...post.comments.filter(cm => cm.reply === comment._id), comment];
+
+    const newPost = {
+        ...post,
+        comments: post.comments.filter(cm => !deleteArr.find(da => cm._id === da._id))
+    };
+
+    dispatch({
+        type: post_types.UPDATE_POST,
+        payload: newPost
+    });
+
+    try {
+        deleteArr.forEach(item => {
+            deleteDataAPI(`comment/${item._id}`, auth.token);
+        });
     } catch (err) {
         dispatch({
             type: global_types.ALERT,

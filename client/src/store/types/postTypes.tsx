@@ -56,6 +56,7 @@ interface UpdatePostAction {
 
 // comments
 export interface CommentData {
+    tag: User;
     _id: string
     content: string
     reply: object

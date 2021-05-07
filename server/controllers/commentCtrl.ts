@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { IComment } from '../interfaces/post.interface';
 import { IRequest } from '../interfaces/request.interface';
 import Comments from '../models/comment.model';
 import Posts from '../models/post.model';
@@ -6,13 +7,15 @@ import Posts from '../models/post.model';
 
 const commentCtrl = {
     createComment: async (req: IRequest, res: Response) => {
-        const { content, postId, tag, reply } = req.body;
+        const { content, postId, tag, reply, postUserId } = req.body;
+
         try {
             const newComment = new Comments({
                 user: req.user._id,
                 content,
                 tag,
-                reply
+                reply,
+                postUserId
             });
 
             // add comments to post
@@ -81,6 +84,29 @@ const commentCtrl = {
                     { new: true });
 
             res.json({ msg: 'Unliked Comment!' })
+        } catch (err) {
+            return res.json(500).json({ msg: err.message });
+        }
+    },
+    deleteComment: async (req: IRequest, res: Response) => {
+        try {
+            // delete comment 
+            const comment = await Comments.findOneAndDelete({
+                _id: req.params.id,
+                $or: [
+                    { user: req.user._id },
+                    { postUserId: req.user._id }
+                ]
+            });
+            console.log(comment.postId);
+
+            // remove comment from post
+            await Posts.findOneAndUpdate(
+                { _id: comment.postId },
+                { $pull: {
+                    comments: req.params.id
+                }});
+            res.json({ msg: 'Deleted Comments' });
         } catch (err) {
             return res.json(500).json({ msg: err.message });
         }

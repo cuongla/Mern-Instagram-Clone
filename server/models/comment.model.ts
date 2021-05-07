@@ -1,5 +1,5 @@
 import mongoose, { Schema, SchemaTypes } from 'mongoose'
-import { IPost } from '../interfaces/post.interface';
+import { IComment, IPost } from '../interfaces/post.interface';
 
 const CommentSchema = new Schema({
     content: {
@@ -15,9 +15,11 @@ const CommentSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'user'
-    }
+    },
+    postId: Schema.Types.ObjectId,
+    postUserId: Schema.Types.ObjectId
 }, {
     timestamps: true
 });
 
-export default mongoose.model<IPost>('comment', CommentSchema);
+export default mongoose.model<IComment>('comment', CommentSchema);
