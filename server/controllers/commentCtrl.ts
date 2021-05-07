@@ -98,7 +98,6 @@ const commentCtrl = {
                     { postUserId: req.user._id }
                 ]
             });
-            console.log(comment.postId);
 
             // remove comment from post
             await Posts.findOneAndUpdate(

@@ -48,7 +48,6 @@ export const getPosts = (token: string) => async (dispatch: Dispatch<PostAction>
 
         // get data
         const res = await getDataAPI('posts', token);
-        console.log(res.data);
         dispatch({
             type: post_types.GET_POSTS,
             payload: res.data
@@ -143,5 +142,21 @@ export const unlikePost = (post: PostData, auth: AuthState) => async (dispatch: 
                 error: err.response.data.msg
             }
         })
+    }
+}
+
+export const getPostDetail = (detailPost: PostData[], id: string, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+    if(detailPost.every(post => post._id !== id)) {
+        try {
+            const res = await getDataAPI(`post/${id}`, auth.token);
+            dispatch({ type: post_types.GET_POST, payload: res.data.post });
+        }catch(err) {
+            dispatch({
+                type: global_types.ALERT,
+                payload: {
+                    error: err.response.data.msg
+                }
+            })
+        }
     }
 }

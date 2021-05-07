@@ -5,6 +5,7 @@ const initialState: ProfileState = {
     users: [],
     posts: [],
     loading: false,
+    ids: []
 };
 
 const profileReducer = (state = initialState, action: ProfileActions) => {
@@ -14,7 +15,7 @@ const profileReducer = (state = initialState, action: ProfileActions) => {
                 ...state,
                 loading: action.payload
             }
-        case profile_types.GET_USER:
+        case profile_types.GET_PROFILE:
             return {
                 ...state,
                 users: [...state.users, action.payload.user]
@@ -28,6 +29,16 @@ const profileReducer = (state = initialState, action: ProfileActions) => {
             return {
                 ...state,
                 users: editData(state.users, action.payload._id, action.payload)
+            }
+        case profile_types.GET_IDS:
+            return {
+                ...state,
+                ids: [...state.ids, action.payload]
+            }
+        case profile_types.GET_USER_POSTS:
+            return {
+                ...state,
+                posts: action.payload.posts
             }
         default:
             return state;

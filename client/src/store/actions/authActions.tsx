@@ -6,8 +6,6 @@ import { global_types } from '../types/globalTypes';
 
 export const register = (data: RegisterData) => async (dispatch: Dispatch<AuthAction>) => {
     const validData = formValidate(data);
-    console.log(validData);
-    console.log(validData.errLength);
 
     if (validData.errLength > 0) {
         return dispatch({

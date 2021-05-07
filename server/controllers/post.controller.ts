@@ -107,6 +107,34 @@ const postCtrl = {
         } catch (err) {
             return res.json(500).json({ msg: err.message });
         }
+    },
+    getUserPosts: async (req: IRequest, res: Response) => {
+        try {
+            const posts = await Posts
+                .find({ user: req.params.id })
+                .sort('-createdAt');
+            res.json({ posts });
+        } catch (err) {
+            return res.json(500).json({ msg: err.message });
+        }
+    },
+    getPost: async (req: IRequest, res: Response) => {
+        try {
+            const post = await Posts
+                .findById(req.params.id)
+                .populate("user likes", "avatar username fullname")
+                .populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'user likes',
+                        select: '-password'
+                    }
+                });
+
+            res.json({ post });
+        } catch (err) {
+            return res.json(500).json({ msg: err.message });
+        }
     }
 }
 

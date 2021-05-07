@@ -1,7 +1,8 @@
 export const global_types = {
     THEME: 'THEME',
     MODAL: 'MODAL',
-    ALERT: 'ALERT'
+    ALERT: 'ALERT',
+    LOADING: 'LOADING'
 }
 
 // Theme
@@ -30,4 +31,10 @@ interface OpenModalAction {
     payload: boolean
 }
 
-export type GlobalActions = SetAlertAction | SetThemeAction | OpenModalAction;
+// loading
+interface LoadingAction {
+    type: typeof global_types.LOADING,
+    payload: boolean
+}
+
+export type GlobalActions = SetAlertAction | SetThemeAction | OpenModalAction | LoadingAction;

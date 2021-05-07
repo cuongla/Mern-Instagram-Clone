@@ -8,11 +8,12 @@ router.route('/posts')
     .get(isAuth, postCtrl.getPosts)
 
 router.route('/post/:id')
-    .patch(isAuth, postCtrl.updatePost);
+    .patch(isAuth, postCtrl.updatePost)
+    .get(isAuth, postCtrl.getPost);
 
 router.patch('/post/:id/like', isAuth, postCtrl.likePost);
 router.patch('/post/:id/unlike', isAuth, postCtrl.unlikePost);
 
-
+router.get('/user_posts/:id/', isAuth, postCtrl.getUserPosts);
 
 export default router;

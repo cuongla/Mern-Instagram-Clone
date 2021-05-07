@@ -1,9 +1,13 @@
+import { PostData } from './postTypes';
+
 export const profile_types = {
     LOADING: 'LOADING',
-    GET_USER: 'GET_USER',
+    GET_PROFILE: 'GET_PROFILE',
     FOLLOW: 'FOLLOW',
     UNFOLLOW: 'UNFOLLOW',
-    STATUS: 'STATUS'
+    STATUS: 'STATUS',
+    GET_IDS: 'GET_IDS',
+    GET_USER_POSTS: 'GET_USER_POSTS'
 }
 
 export interface User {
@@ -30,6 +34,7 @@ export interface ProfileState {
     users: Profile[]
     posts?: any
     loading: boolean
+    ids: string[]
 }
 
 export interface EditProfileData {
@@ -49,7 +54,7 @@ interface SetLoadingUserAction {
 }
 
 interface GetUserAction {
-    type: typeof profile_types.GET_USER,
+    type: typeof profile_types.GET_PROFILE,
     payload: any
 }
 
@@ -68,4 +73,14 @@ interface StatusAction {
     payload: boolean
 }
 
-export type ProfileActions = SetLoadingUserAction | GetUserAction | FollowUserAction | UnfollowUserAction | StatusAction;
+interface GetUserIdAction {
+    type: typeof profile_types.GET_IDS,
+    payload: string[]
+}
+
+interface GetUserPostsAction {
+    type: typeof profile_types.GET_USER_POSTS,
+    payload: PostData[]
+}
+
+export type ProfileActions = SetLoadingUserAction | GetUserAction | FollowUserAction | UnfollowUserAction | StatusAction | GetUserIdAction | GetUserPostsAction;

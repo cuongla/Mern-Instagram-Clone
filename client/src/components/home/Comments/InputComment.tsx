@@ -32,10 +32,10 @@ const InputComment: React.FC<InputCommentsProps> = ({ post, children, targetComm
             reply: onReply && targetComment?._id,
             tag: onReply && targetComment?.user
         }
-        console.log(onReply);
 
         dispatch(createComment(post, newComment, auth));
         if(setOnReply) return setOnReply(false);
+        setContent('');
     }
 
     return (

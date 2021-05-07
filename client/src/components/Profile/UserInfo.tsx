@@ -1,23 +1,21 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { RootState } from 'store';
-import { Profile } from 'store/types/userTypes';
-import { IParams } from 'typings/params';
+import React, { useState, useEffect, Dispatch } from 'react';
+import { Profile, ProfileState, User } from 'store/types/userTypes';
 import Avatar from 'components/reusable/Avatar';
-import { getProfileUsers } from 'store/actions/profileActions';
 import EditProfile from './EditProfile';
 import FollowBtn from './FollowBtn'
 import Followers from './Followers';
 import Following from './Following';
 import { global_types } from 'store/types/globalTypes';
+import { AuthState } from 'store/types/authTypes';
 
-const UserInfo: React.FC = () => {
-    const dispatch = useDispatch();
-    const { id } = useParams<IParams>();
-    const { auth, profile } = useSelector((state: RootState) => state);
+export interface UserInfoProps {
+    id: string
+    profile: ProfileState
+    auth: AuthState
+    dispatch: Dispatch<any>
+}
 
+const UserInfo: React.FC<UserInfoProps> = ({ auth, id, profile, dispatch }) => {
     const [userData, setUserData] = useState<Profile[]>([]);
     const [onEdit, setOnEdit] = useState(false);
     const [showFollowers, setShowFollowers] = useState(false);
@@ -25,10 +23,9 @@ const UserInfo: React.FC = () => {
 
 
     useEffect(() => {
-        dispatch(getProfileUsers(profile.users, id, auth))
         const newData = profile.users.filter((user: Profile) => user._id === id);
         setUserData(newData);
-    }, [id, dispatch, profile, auth]);
+    }, [id, profile.users]);
 
     useEffect(() => {
         if(showFollowers || showFollowing || onEdit) {
@@ -52,7 +49,7 @@ const UserInfo: React.FC = () => {
                             <div className="info_content_title">
                                 <h2>{user.username}</h2>
                                 {
-                                    user._id === auth.user._id
+                                    user._id === ((auth.user as User) as User)._id
                                         ? (
                                             <button
                                                 className="btn btn-outline-info"
@@ -70,8 +67,8 @@ const UserInfo: React.FC = () => {
                                     onClick={() => setShowFollowers(true)}
                                     style={{ marginRight: '24px' }}>
                                     {
-                                        user._id === auth.user._id
-                                            ? auth.user.followers.length
+                                        user._id === (auth.user as User)._id
+                                            ? (auth.user as User).followers.length
                                             : user.followers.length
                                     } Followers
                                 </span>
@@ -79,8 +76,8 @@ const UserInfo: React.FC = () => {
                                     onClick={() => setShowFollowing(true)}
                                     style={{ marginLeft: '24px' }}>
                                     {
-                                        user._id === auth.user._id
-                                            ? auth.user.following.length
+                                        user._id === (auth.user as User)._id
+                                            ? (auth.user as User).following.length
                                             : user.following.length
                                     } Following
                                 </span>

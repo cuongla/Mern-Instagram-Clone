@@ -21,7 +21,6 @@ const Comments: React.FC<CommentsProps> = ({ post }) => {
     useEffect(() => {
         const newRep = post.comments.filter(comment => comment.reply);
         setreplyComments(newRep);
-        console.log(newRep);
     }, [post.comments])
 
     return (

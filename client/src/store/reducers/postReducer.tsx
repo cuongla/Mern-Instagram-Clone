@@ -5,7 +5,7 @@ const initialState: PostState = {
     loading: false,
     posts: [],
     result: 0,
-    page: 2
+    page: 2,
 };
 
 const authReducer = (state = initialState, action: PostAction) => {
@@ -31,8 +31,8 @@ const authReducer = (state = initialState, action: PostAction) => {
             return {
                 ...state,
                 posts: editData(
-                    state.posts, 
-                    action.payload._id, 
+                    state.posts,
+                    action.payload._id,
                     action.payload
                 )
             }

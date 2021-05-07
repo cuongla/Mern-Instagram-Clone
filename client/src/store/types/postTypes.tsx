@@ -6,6 +6,7 @@ export const post_types = {
     LOADING_POST: 'LOADING_POST',
     GET_POSTS: 'GET_POSTS',
     UPDATE_POST: 'UPDATE_POST',
+    GET_POST: 'GET_POST',
 }
 
 // post
@@ -14,6 +15,10 @@ export interface PostState {
     result?: number
     page?: number
     loading: boolean
+}
+
+export interface DetailPostState {
+    
 }
 
 export interface PostData {
@@ -54,6 +59,11 @@ interface UpdatePostAction {
     payload: PostState
 }
 
+interface GetPostAction {
+    type: typeof post_types.GET_POST,
+    payload: PostData
+}
+
 // comments
 export interface CommentData {
     tag: User;
@@ -65,4 +75,4 @@ export interface CommentData {
     createdAt?: Date | number
 }
 
-export type PostAction = CreatePostAction | LoadingPostAction | GetPostsAction | UpdatePostAction;
+export type PostAction = CreatePostAction | LoadingPostAction | GetPostsAction | UpdatePostAction | GetPostAction;

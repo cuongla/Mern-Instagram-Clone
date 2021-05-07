@@ -57,7 +57,6 @@ const userCtrl = {
         }
     },
     followUser: async (req: IRequest, res: Response) => {
-        console.log(req.user);
         try {
             const user = await User.find({ _id: req.params.id, followers: req.user._id });
 

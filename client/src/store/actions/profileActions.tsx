@@ -8,28 +8,35 @@ import { imageUpload } from 'utils/imageUpload';
 import { patchhDataAPI } from 'utils/fetchData';
 import { deleteData } from 'store/actions/globalActions';
 
-export const getProfileUsers = (users: Profile[], id: string, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
-    if (users.every(user => user._id !== id)) {
-        try {
-            dispatch({ type: profile_types.LOADING, payload: true });
+export const getProfile = (id: string, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
+    dispatch({ type: profile_types.GET_IDS, payload: id });
 
-            // get user from server
-            const res = await getDataAPI(`/user/${id}`, auth.token);
-            dispatch({
-                type: profile_types.GET_USER,
-                payload: res.data
-            });
+    try {
+        dispatch({ type: profile_types.LOADING, payload: true });
 
-            // stop loading
-            dispatch({ type: profile_types.LOADING, payload: false });
-        } catch (err) {
-            dispatch({
-                type: global_types.ALERT,
-                payload: {
-                    error: err.response.data.msg
-                }
-            })
-        }
+        // get user from server
+        const profileData = await getDataAPI(`/user/${id}`, auth.token);
+        dispatch({
+            type: profile_types.GET_PROFILE,
+            payload: profileData.data
+        });
+
+        // get user posts
+        const postData = await getDataAPI(`/user_posts/${id}`, auth.token);
+        dispatch({
+            type: profile_types.GET_USER_POSTS,
+            payload: postData.data
+        });
+
+        // stop loading
+        dispatch({ type: profile_types.LOADING, payload: false });
+    } catch (err) {
+        dispatch({
+            type: global_types.ALERT,
+            payload: {
+                error: err.response.data.msg
+            }
+        })
     }
 }
 
@@ -90,14 +97,14 @@ export const updateProfileUser = (userData: any, avatar: any, auth: AuthState) =
 
 export const follow = (users: Profile[], user: Profile, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
     let newUser = { ...user, followers: [...user.followers, auth.user] };
-    if(users.every(item => item._id !== user._id)) {
+    if (users.every(item => item._id !== user._id)) {
         newUser = {
             ...user,
             followers: [...user.followers, auth.user]
         }
     } else {
         users.forEach(item => {
-            if(item._id === user._id) {
+            if (item._id === user._id) {
                 newUser = {
                     ...item,
                     followers: [...item.followers, auth.user]
@@ -126,7 +133,7 @@ export const follow = (users: Profile[], user: Profile, auth: AuthState) => asyn
     // update in db
     try {
         await patchhDataAPI(`user/${user._id}/follow`, null, auth.token);
-    } catch(err) {
+    } catch (err) {
         dispatch({
             type: global_types.ALERT,
             payload: { error: err.response.data.msg }
@@ -137,14 +144,14 @@ export const follow = (users: Profile[], user: Profile, auth: AuthState) => asyn
 export const unfollow = (users: Profile[], user: Profile, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
     let newUser;
 
-    if(users.every(item => item._id !== user._id)) {
+    if (users.every(item => item._id !== user._id)) {
         newUser = {
             ...user,
             followers: deleteData(user.followers, (auth.user as Profile)._id)
         }
     } else {
         users.forEach(item => {
-            if(item._id === user._id) {
+            if (item._id === user._id) {
                 newUser = {
                     ...item,
                     followers: deleteData(item.followers, (auth.user as Profile)._id)
@@ -170,13 +177,13 @@ export const unfollow = (users: Profile[], user: Profile, auth: AuthState) => as
         }
     });
 
-        // update in db
-        try {
-            await patchhDataAPI(`user/${user._id}/unfollow`, null, auth.token);
-        } catch(err) {
-            dispatch({
-                type: global_types.ALERT,
-                payload: { error: err.response.data.msg }
-            })
-        }
+    // update in db
+    try {
+        await patchhDataAPI(`user/${user._id}/unfollow`, null, auth.token);
+    } catch (err) {
+        dispatch({
+            type: global_types.ALERT,
+            payload: { error: err.response.data.msg }
+        })
+    }
 }
