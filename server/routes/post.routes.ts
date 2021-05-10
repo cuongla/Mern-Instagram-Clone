@@ -16,4 +16,6 @@ router.patch('/post/:id/unlike', isAuth, postCtrl.unlikePost);
 
 router.get('/user_posts/:id/', isAuth, postCtrl.getUserPosts);
 
+router.get('/posts/discover', isAuth, postCtrl.getPostsDsicover);
+
 export default router;

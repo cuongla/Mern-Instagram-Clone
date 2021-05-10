@@ -17,10 +17,6 @@ export interface PostState {
     loading: boolean
 }
 
-export interface DetailPostState {
-    
-}
-
 export interface PostData {
     _id?: string
     content: string

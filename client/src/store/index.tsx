@@ -12,6 +12,8 @@ import statusReducer from './reducers/statusReducer';
 import postReducer from './reducers/postReducer';
 import modalReducer from './reducers/modalReducer';
 import detailPostReducer from './reducers/detailPostReducer';
+import discoverReducer from './reducers/discoverReducer';
+
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -21,7 +23,8 @@ const rootReducer = combineReducers({
     status: statusReducer,
     homePosts: postReducer,
     modal: modalReducer,
-    detailPost: detailPostReducer
+    detailPost: detailPostReducer,
+    discover: discoverReducer
 })
 
 const store = createStore(

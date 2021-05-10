@@ -2,6 +2,27 @@ import { Response } from 'express';
 import { IRequest } from '../interfaces/request.interface';
 import Posts from '../models/post.model';
 
+class APIfeatures {
+    query: {
+        skip: any
+        limit: any
+    };
+    queryString: number;
+
+    constructor(query, queryString) {
+        this.query = query;
+        this.queryString = queryString
+    }
+
+    paginating() {
+        const page = this.queryString * 1 || 1;
+        const limit = this.queryString * 1 || 3;
+        const skip = (page - 1) * limit;
+        this.query = this.query.skip(skip).limit(limit);
+        return this;
+    }
+}
+
 const postCtrl = {
     createPost: async (req: IRequest, res: Response) => {
         const { content, images } = req.body;
@@ -29,10 +50,17 @@ const postCtrl = {
     },
     getPosts: async (req: IRequest, res: Response) => {
         try {
-            const posts = await Posts
-                .find({
-                    user: [...req.user.following, req.user._id]
-                })
+            const postFeatures = new APIfeatures(
+                Posts
+                    .find({
+                        user: [...req.user.following, req.user._id]
+                    }),
+                req.query
+            ).paginating();
+
+            const posts = await postFeatures
+                .query
+                // @ts-ignore
                 .sort('-createdAt')
                 .populate("user likes", "avatar username fullname")
                 .populate({
@@ -110,8 +138,16 @@ const postCtrl = {
     },
     getUserPosts: async (req: IRequest, res: Response) => {
         try {
-            const posts = await Posts
-                .find({ user: req.params.id })
+            const postFeatures = new APIfeatures(
+                Posts
+                    .find({
+                        user: [...req.user.following, req.user._id]
+                    }),
+                req.query
+            ).paginating();
+            const posts = await postFeatures
+                .query
+                // @ts-ignore
                 .sort('-createdAt');
             res.json({ posts });
         } catch (err) {
@@ -134,6 +170,33 @@ const postCtrl = {
             res.json({ post });
         } catch (err) {
             return res.json(500).json({ msg: err.message });
+        }
+    },
+    getPostsDsicover: async (req: IRequest, res: Response) => {
+        try {
+            const postFeatures = new APIfeatures(
+                Posts
+                    .find({
+                        user: {
+                            $nin: [...req.user.following, req.user._id]
+                        }
+                    }),
+                req.query
+            ).paginating();
+
+            // @ts-ignore
+            const posts = await postFeatures.query.sort('-createdAt');
+
+            res.json({
+                msg: 'Successfully Loaded.',
+                result: posts.length,
+                posts
+
+            })
+        } catch (err) {
+            return res.status(500).json({
+                msg: err.message
+            });
         }
     }
 }
