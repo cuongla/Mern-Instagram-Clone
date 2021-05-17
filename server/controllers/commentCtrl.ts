@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { IComment } from '../interfaces/post.interface';
 import { IRequest } from '../interfaces/request.interface';
 import Comments from '../models/comment.model';
 import Posts from '../models/post.model';
@@ -10,21 +9,22 @@ const commentCtrl = {
         const { content, postId, tag, reply, postUserId } = req.body;
 
         try {
+            // check post
+            const post = await Posts.findById(postId);
+            if(!post) return res.status(400).json({msg: "This post does not exist."})
+
+            // create new comment
             const newComment = new Comments({
                 user: req.user._id,
-                content,
-                tag,
-                reply,
-                postUserId
+                content, tag, reply, postUserId, postId
             });
 
             // add comments to post
+
             await Posts.findOneAndUpdate(
-                { _id: postId },
-                {
-                    $push: { comments: newComment._id }
-                }
-                , { new: true });
+                {_id: postId},
+                 { $push: {comments: newComment._id}}, 
+                 {new: true});
 
             await newComment.save();
             res.json({ newComment });
@@ -38,11 +38,9 @@ const commentCtrl = {
         const { content } = req.body;
 
         try {
-            await Comments.findOneAndUpdate(
-                {
+            await Comments.findOneAndUpdate({
                     _id: req.params.id,
-                    user: req.user._id
-                },
+                    user: req.user._id },
                 { content }
             );
 
@@ -55,19 +53,18 @@ const commentCtrl = {
     },
     likeComment: async (req: IRequest, res: Response) => {
         try {
-            const comment = await Comments.find(
-                {
-                    _id: req.params.id,
-                    likes: req.user._id
-                });
-            if (comment.length > 0) return res.status(400).json({ msg: 'You  liked this post.' });
+            const comment = await Comments.find({
+                _id: req.params.id, 
+                likes: req.user._id
+            });
+
+            if(comment.length > 0) return res.status(400).json({msg: "You already liked this post!"})
 
             // update likes
-            await Comments
-                .findOneAndUpdate(
-                    { _id: req.params.id },
-                    { $push: { likes: req.user._id } },
-                    { new: true });
+            await Comments.findOneAndUpdate(
+                { _id: req.params.id }, 
+                { $push: {likes: req.user._id}}, 
+                {new: true});
 
             res.json({ msg: 'Liked Comment!' })
         } catch (err) {
@@ -77,11 +74,10 @@ const commentCtrl = {
     unlikeComment: async (req: IRequest, res: Response) => {
         try {
             // update likes
-            await Comments
-                .findOneAndUpdate(
-                    { _id: req.params.id },
-                    { $pull: { likes: req.user._id } },
-                    { new: true });
+            await Comments.findOneAndUpdate(
+                    {_id: req.params.id}, 
+                    { $pull: {likes: req.user._id}}, 
+                    {new: true});
 
             res.json({ msg: 'Unliked Comment!' })
         } catch (err) {
@@ -90,21 +86,19 @@ const commentCtrl = {
     },
     deleteComment: async (req: IRequest, res: Response) => {
         try {
-            // delete comment 
             const comment = await Comments.findOneAndDelete({
                 _id: req.params.id,
                 $or: [
-                    { user: req.user._id },
-                    { postUserId: req.user._id }
+                    {user: req.user._id},
+                    {postUserId: req.user._id}
                 ]
             });
 
             // remove comment from post
             await Posts.findOneAndUpdate(
-                { _id: comment.postId },
-                { $pull: {
-                    comments: req.params.id
-                }});
+                { _id: comment.postId }, 
+                { $pull: {comments: req.params.id}});
+
             res.json({ msg: 'Deleted Comments' });
         } catch (err) {
             return res.json(500).json({ msg: err.message });

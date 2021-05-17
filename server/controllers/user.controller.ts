@@ -9,7 +9,7 @@ const userCtrl = {
             const users = await User
                 .find({
                     username: {
-                        $regex: req.query.username as string
+                        $regex: req.query.username
                     }
                 })
                 .limit(10)

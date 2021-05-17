@@ -6,14 +6,15 @@ import cookieParser from 'cookie-parser';
 import { createServer } from "http";
 import { Server } from "socket.io";
 import path from 'path';
+import SocketServer from './socketServer';
+import { ExpressPeerServer } from 'peer';
 
 // routes
 import AuthRoutes from './routes/auth.routes';
 import UserRoutes from './routes/user.routes';
 import PostRoutes from './routes/post.routes';
 import CommentRoutes from './routes/comment.routes';
-import SocketServer from './socketServer';
-import { ExpressPeerServer } from 'peer';
+import NotificationRoutes from './routes/notification.routes';
 
 // app
 const app = express();
@@ -37,6 +38,7 @@ app.use('/api', AuthRoutes);
 app.use('/api', UserRoutes);
 app.use('/api', PostRoutes);
 app.use('/api', CommentRoutes);
+app.use('/api', NotificationRoutes);
 
 // connect to db
 mongoose.Promise = global.Promise

@@ -5,7 +5,7 @@ export interface INotification extends Document {
     id: string
     user: IUser
     recipients: IUser[],
-    url: string
+    url: string[]
     text: string
     content: string
     image: string
