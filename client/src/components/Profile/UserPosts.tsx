@@ -3,6 +3,8 @@ import { UserInfoProps } from './UserInfo';
 import UserPostThumb from './UserPostThumb';
 import LoadMoreBtn from 'components/reusable/buttons/LoadMoreBtn';
 import LoadIcon from 'images/loading.gif';
+import { getDataAPI } from 'utils/fetchData';
+import { profile_types } from 'store/types/userTypes';
 
 
 const UserPosts: React.FC<UserInfoProps> = ({ auth, id, dispatch, profile }) => {
@@ -13,16 +15,22 @@ const UserPosts: React.FC<UserInfoProps> = ({ auth, id, dispatch, profile }) => 
 
     useEffect(() => {
         profile.posts.forEach((data: any) => {
-            if(data._id === id) {
-                setPosts(data.posts);
+            console.log(data);
+            if(data.user === id) {
+                setPosts(posts);
                 setResult(data.result)
+                setPage(data.page)
             }
         })
     }, [id, posts, profile.posts]);
 
     const handleLoadMore = async () => {
         setLoading(true);
-
+        const res = await getDataAPI(`user_posts/${id}?limit=${page * 3}`, auth.token);
+        dispatch({
+            type: profile_types.GET_USER_POSTS,
+            payload: res.data
+        });
         setLoading(false);
     }
 

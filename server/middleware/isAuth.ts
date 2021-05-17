@@ -6,14 +6,17 @@ import { IRequest } from '../interfaces/request.interface';
 const isAuth = async (req: IRequest, res: Response, next: NextFunction) => {
     try {
         const token = req.header("Authorization");
+
+        // check token
         !token && res.status(500).json({ msg: 'Authentication Failed' });
 
         // deconding token
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+        // check decoded token
         !decodedToken && res.status(500).json({ msg: 'Authentication Failed' });
 
-
-        // return user
+        // assign user
         const user = await User.findById({ _id: (decodedToken as any).id });
 
         req.user = user;

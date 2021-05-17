@@ -145,10 +145,12 @@ const postCtrl = {
                     }),
                 req.query
             ).paginating();
+
             const posts = await postFeatures
                 .query
                 // @ts-ignore
                 .sort('-createdAt');
+            console.log(posts);
             res.json({ posts });
         } catch (err) {
             return res.json(500).json({ msg: err.message });
