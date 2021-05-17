@@ -15,4 +15,5 @@ export interface IUser extends Document {
     followers: any
     following: any
     socketId?: string
+    savedPost: string[]
 }

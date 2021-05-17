@@ -1,13 +1,19 @@
 import { Response } from 'express';
 import { IRequest } from '../interfaces/request.interface';
 import Posts from '../models/post.model';
+import Comments from '../models/comment.model';
+import Users from '../models/user.model';
 
 class APIfeatures {
     query: {
         skip: any
         limit: any
+        sort: (event: string) => any
     };
-    queryString: number;
+    queryString: {
+        page: number
+        limit: number
+    };
 
     constructor(query, queryString) {
         this.query = query;
@@ -15,10 +21,10 @@ class APIfeatures {
     }
 
     paginating() {
-        const page = this.queryString * 1 || 1;
-        const limit = this.queryString * 1 || 3;
-        const skip = (page - 1) * limit;
-        this.query = this.query.skip(skip).limit(limit);
+        const page = this.queryString.page * 1 || 1
+        const limit = this.queryString.limit * 1 || 9
+        const skip = (page - 1) * limit
+        this.query = this.query.skip(skip).limit(limit)
         return this;
     }
 }
@@ -32,15 +38,13 @@ const postCtrl = {
         });
 
         try {
-            const newPost = new Posts({
-                content,
-                images,
-                user: req.user._id
-            });
+            const newPost = new Posts({ content, images, user: req.user._id });
+
+            // save post and return post
             await newPost.save();
             res.json({
-                msg: 'Post is created.',
-                newPost
+                msg: 'Created Post!',
+                newPost: { ...newPost._doc, user: req.user }
             });
         } catch (err) {
             return res.status(500).json({
@@ -50,18 +54,11 @@ const postCtrl = {
     },
     getPosts: async (req: IRequest, res: Response) => {
         try {
-            const postFeatures = new APIfeatures(
-                Posts
-                    .find({
-                        user: [...req.user.following, req.user._id]
-                    }),
-                req.query
-            ).paginating();
+            const postFeatures = new APIfeatures(Posts.find({
+                user: [...req.user.following, req.user._id]
+            }), req.query).paginating();
 
-            const posts = await postFeatures
-                .query
-                // @ts-ignore
-                .sort('-createdAt')
+            const posts = await postFeatures.query.sort('-createdAt')
                 .populate("user likes", "avatar username fullname")
                 .populate({
                     path: 'comments',
@@ -72,11 +69,10 @@ const postCtrl = {
                 });
 
             res.json({
-                msg: 'Successfully Loaded.',
+                msg: 'Successfully Loaded!',
                 result: posts.length,
                 posts
-
-            })
+            });
         } catch (err) {
             return res.status(500).json({
                 msg: err.message
@@ -90,32 +86,68 @@ const postCtrl = {
             const post = await Posts
                 .findOneAndUpdate(
                     { _id: req.params.id },
-                    { content, images })
-                .populate("user likes", "avatar username fullname");
+                    { content, images }
+                )
+                .populate("user likes", "avatar username fullname")
+                .populate({
+                    path: "comments",
+                    populate: {
+                        path: "user likes",
+                        select: "-password"
+                    }
+                });
 
             res.json({
                 msg: 'Updated Post!',
-                newPost: {
-                    ...post._doc,
-                    content,
-                    images
-                }
+                newPost: { ...post._doc, content, images }
             })
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
     },
+    deletePost: async (req: IRequest, res: Response) => {
+        try {
+            const post = await Posts.findOneAndDelete({
+                _id: req.params.id,
+                user: req.user._id
+            });
+
+            // check post
+            if (!post) return res.status(400).json({ msg: 'This post does not exist.' });
+
+            // delete all comments once post is deleted
+            await Comments.deleteMany({ _id: { $in: post.comments } })
+
+            res.json({
+                msg: 'Deleted Post!',
+                newPost: {
+                    ...post,
+                    user: req.user
+                }
+            })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
     likePost: async (req: IRequest, res: Response) => {
         try {
-            const post = await Posts.find({ _id: req.params.id, likes: req.user._id });
-            if (post.length > 0) return res.status(400).json({ msg: 'You  liked this post.' });
+            const post = await Posts.find({
+                _id: req.params.id,
+                likes: req.user._id
+            });
+
+            // check like
+            if (post.length > 0) return res.status(400).json({ msg: 'You already liked this post!' });
 
             // update likes
-            await Posts
+            const selectedPost = await Posts
                 .findOneAndUpdate(
                     { _id: req.params.id },
                     { $push: { likes: req.user._id } },
                     { new: true });
+
+            // check post 
+            if (!selectedPost) return res.status(400).json({ msg: 'This post does not exist.' })
 
             res.json({ msg: 'Liked Post!' })
         } catch (err) {
@@ -125,11 +157,13 @@ const postCtrl = {
     unlikePost: async (req: IRequest, res: Response) => {
         try {
             // update likes
-            await Posts
-                .findOneAndUpdate(
-                    { _id: req.params.id },
-                    { $pull: { likes: req.user._id } },
-                    { new: true });
+            const selectedPost = await Posts.findOneAndUpdate(
+                { _id: req.params.id },
+                { $pull: { likes: req.user._id } },
+                { new: true });
+
+            // check post 
+            if (!selectedPost) return res.status(400).json({ msg: 'This post does not exist.' })
 
             res.json({ msg: 'Unliked Post!' })
         } catch (err) {
@@ -138,20 +172,14 @@ const postCtrl = {
     },
     getUserPosts: async (req: IRequest, res: Response) => {
         try {
-            const postFeatures = new APIfeatures(
-                Posts
-                    .find({
-                        user: [...req.user.following, req.user._id]
-                    }),
-                req.query
-            ).paginating();
+            const postFeatures = new APIfeatures(Posts.find({ user: req.params.userId }), req.query).paginating();
 
-            const posts = await postFeatures
-                .query
-                // @ts-ignore
-                .sort('-createdAt');
-            console.log(posts);
-            res.json({ posts });
+            const posts = await postFeatures.query.sort("-createdAt");
+
+            res.json({
+                posts,
+                result: posts.length
+            })
         } catch (err) {
             return res.json(500).json({ msg: err.message });
         }
@@ -168,37 +196,89 @@ const postCtrl = {
                         select: '-password'
                     }
                 });
+            // check post
+            if (!post) return res.status(400).json({ msg: 'This post does not exist.' })
 
             res.json({ post });
         } catch (err) {
             return res.json(500).json({ msg: err.message });
         }
     },
-    getPostsDsicover: async (req: IRequest, res: Response) => {
+    getPostDiscover: async (req: IRequest, res: Response) => {
         try {
-            const postFeatures = new APIfeatures(
-                Posts
-                    .find({
-                        user: {
-                            $nin: [...req.user.following, req.user._id]
-                        }
-                    }),
-                req.query
-            ).paginating();
+            const newArr = [...req.user.following, req.user._id]
 
-            // @ts-ignore
-            const posts = await postFeatures.query.sort('-createdAt');
+            const num = req.query.num || 9
 
-            res.json({
-                msg: 'Successfully Loaded.',
+            // get posts in random
+            const posts = await Posts.aggregate([
+                { $match: { user: { $nin: newArr } } },
+                { $sample: { size: Number(num) } },
+            ])
+
+            return res.json({
+                msg: 'Success!',
                 result: posts.length,
                 posts
-
-            })
+            });
         } catch (err) {
             return res.status(500).json({
                 msg: err.message
             });
+        }
+    },
+    savePost: async (req: IRequest, res: Response) => {
+        try {
+            const user = await Users.find({ 
+                _id: req.user._id, 
+                savedPost: req.params.id 
+            });
+
+            // check if post is saved 
+            if(user.length > 0) return res.status(400).json({msg: "You saved this post."})
+
+            // save post
+            const seletedPost = await Users.findOneAndUpdate(
+                { _id: req.user._id }, 
+                { $push: {saved: req.params.id}}, 
+                {new: true});
+                
+            // check post
+            if(!seletedPost) return res.status(400).json({msg: 'This user does not exist.'});
+
+            res.status(200).json({ msg: 'Post is saved!' })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
+    unsavePost: async (req: IRequest, res: Response) => {
+        try {
+            const savedPosts = await Users.findOneAndUpdate(
+                { _id: req.user._id },
+                { $pull: { savedPost: req.params.id } },
+                { new: true });
+
+            if (!savedPosts) return res.status(400).json({ msg: 'This user does not exist.' });
+
+            res.json({ msg: 'Post is Removed!' })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    getSavedPosts: async (req: IRequest, res: Response) => {
+        try {
+            const postFeatures = new APIfeatures(Posts.find({
+                _id: { $in: req.user.savedPost }
+            }), req.query).paginating();
+
+            const savedPosts = await postFeatures.query.sort("-createdAt");
+
+            res.json({
+                savedPosts,
+                result: savedPosts.length
+            });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
         }
     }
 }

@@ -92,7 +92,7 @@ const userCtrl = {
                 }
             );
 
-            res.json({ msg: 'Followed User.'});
+            res.json({ msg: 'Followed User.' });
         } catch (err) {
             return res.status(500).json({
                 msg: err.message
@@ -129,7 +129,7 @@ const userCtrl = {
                 }
             );
 
-            res.json({ msg: 'You have unfollowed the person.'});
+            res.json({ msg: 'You have unfollowed the person.' });
         } catch (err) {
             return res.status(500).json({
                 msg: err.message

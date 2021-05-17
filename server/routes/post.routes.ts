@@ -14,8 +14,12 @@ router.route('/post/:id')
 router.patch('/post/:id/like', isAuth, postCtrl.likePost);
 router.patch('/post/:id/unlike', isAuth, postCtrl.unlikePost);
 
-router.get('/user_posts/:id/', isAuth, postCtrl.getUserPosts);
+router.patch('/savePost/:id', isAuth, postCtrl.savePost);
+router.patch('/unSavePost/:id', isAuth, postCtrl.unsavePost);
 
-router.get('/posts/discover', isAuth, postCtrl.getPostsDsicover);
+router.get('/user_posts/:userId', isAuth, postCtrl.getUserPosts);
+router.get('/posts/discover', isAuth, postCtrl.getPostDiscover);
+router.get('/user_saved_posts', isAuth, postCtrl.getSavedPosts);
+
 
 export default router;
