@@ -4,7 +4,7 @@ import { IUser } from "./user.interfaces";
 export interface INotification extends Document {
     id: string
     user: IUser
-    recipients: any,
+    recipients: IUser[],
     url: string
     text: string
     content: string

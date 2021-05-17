@@ -4,8 +4,8 @@ import { IUser } from './user.interfaces';
 
 export interface IMessage extends Document {
     converstion: IChat
-    sender: IUser
-    recipient: IUser
+    sender: IUser | string
+    recipient: IUser | string
     text: string
     media: string
     call: Object

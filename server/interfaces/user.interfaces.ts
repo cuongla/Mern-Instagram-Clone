@@ -14,4 +14,5 @@ export interface IUser extends Document {
     website: string
     followers: any
     following: any
+    socketId?: string
 }

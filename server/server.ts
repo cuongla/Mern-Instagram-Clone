@@ -1,22 +1,36 @@
 require('dotenv').config();
-import express from 'express';
+import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
-const app = express();
+import { createServer } from "http";
+import { Server } from "socket.io";
+import path from 'path';
 
 // routes
 import AuthRoutes from './routes/auth.routes';
 import UserRoutes from './routes/user.routes';
 import PostRoutes from './routes/post.routes';
 import CommentRoutes from './routes/comment.routes';
+import SocketServer from './socketServer';
+import { ExpressPeerServer } from 'peer';
 
+// app
+const app = express();
 
 // middlewares
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
+
+// socket
+const http = createServer(app);
+const io = new Server(http);
+
+io.on('connection', (socket: any) => SocketServer(socket));
+
+// express peer server
+ExpressPeerServer(http, { path: '/' });
 
 // routes
 app.use('/api', AuthRoutes);
@@ -32,9 +46,17 @@ mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, err => {
-    if(err) throw err;
+    if (err) throw err;
     console.log(`Connecting to mongodb`)
 });
+
+//production for deployment
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'))
+    app.get('*', (req: Request, res: Response) => {
+        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+    })
+}
 
 // connecting to port
 const port = process.env.PORT || 5000;
