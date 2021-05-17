@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { IRequest } from '../interfaces/request.interface';
 import Notifications from '../models/notification.model';
 
-const postCtrl = {
+const notificationCtrl = {
     addNotification: async (req: IRequest, res: Response) => {
         const { id, recipients, url, text, content, image } = req.body;
 
@@ -75,4 +75,4 @@ const postCtrl = {
     },
 }
 
-export default postCtrl;
+export default notificationCtrl;

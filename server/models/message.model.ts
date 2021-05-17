@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose'
 import { IMessage } from '../interfaces/message.interface';
 
 const MessageSchema = new Schema({
-    conversation: { 
+    chat: { 
         type: mongoose.Types.ObjectId, 
         ref: 'chat' 
     },

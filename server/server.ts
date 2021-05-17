@@ -15,6 +15,7 @@ import UserRoutes from './routes/user.routes';
 import PostRoutes from './routes/post.routes';
 import CommentRoutes from './routes/comment.routes';
 import NotificationRoutes from './routes/notification.routes';
+import MessageRoutes from './routes/message.routes';
 
 // app
 const app = express();
@@ -39,7 +40,7 @@ app.use('/api', UserRoutes);
 app.use('/api', PostRoutes);
 app.use('/api', CommentRoutes);
 app.use('/api', NotificationRoutes);
-
+app.use('/api', MessageRoutes);
 // connect to db
 mongoose.Promise = global.Promise
 mongoose.connect(process.env.MONGO_URI, {
