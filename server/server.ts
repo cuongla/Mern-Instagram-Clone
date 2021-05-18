@@ -59,8 +59,6 @@ app.get("/logger", (_, res) => {
     Logger.info("This is a info log");
     Logger.http("This is a http log");
     Logger.debug("This is a debug log");
-
-    res.send("Hello world");
 });
 
 //production for deployment

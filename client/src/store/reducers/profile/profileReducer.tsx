@@ -1,5 +1,5 @@
-import { ProfileActions, ProfileState, profile_types } from '../types/userTypes';
-import { editData } from '../actions/globalActions';
+import { ProfileActions, ProfileState, profile_types } from '../../types/userTypes';
+import { editData } from '../../actions/globalActions';
 
 const initialState: ProfileState = {
     users: [],

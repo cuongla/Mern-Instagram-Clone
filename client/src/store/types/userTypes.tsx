@@ -7,7 +7,10 @@ export const profile_types = {
     UNFOLLOW: 'UNFOLLOW',
     STATUS: 'STATUS',
     GET_IDS: 'GET_IDS',
-    GET_USER_POSTS: 'GET_USER_POSTS'
+    GET_USER_POSTS: 'GET_USER_POSTS',
+    GET_SUGGESSTION_USERS: 'GET_SUGGESSTION_USERS',
+    ONLINE: 'ONLINE',
+    OFFLINE: 'OFFLINE'
 }
 
 export interface User {
@@ -35,6 +38,11 @@ export interface ProfileState {
     posts?: any
     loading: boolean
     ids: string[]
+}
+
+export interface Suggestion_State {
+    users: Profile[]
+    loading: boolean
 }
 
 export interface EditProfileData {
@@ -83,4 +91,19 @@ interface GetUserPostsAction {
     payload: PostData[]
 }
 
-export type ProfileActions = SetLoadingUserAction | GetUserAction | FollowUserAction | UnfollowUserAction | StatusAction | GetUserIdAction | GetUserPostsAction;
+interface GetSuggestionUsersAction {
+    type: typeof profile_types.GET_SUGGESSTION_USERS,
+    payload: User[]
+}
+
+interface UserOnlineAction {
+    type: typeof profile_types.ONLINE,
+    payload: User[]
+}
+
+interface UserOfflineAction {
+    type: typeof profile_types.OFFLINE,
+    payload: User[]
+}
+
+export type ProfileActions = SetLoadingUserAction | GetUserAction | FollowUserAction | UnfollowUserAction | StatusAction | GetUserIdAction | GetUserPostsAction | GetSuggestionUsersAction | UserOnlineAction | UserOfflineAction;

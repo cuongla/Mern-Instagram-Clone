@@ -1,4 +1,4 @@
-import { ProfileActions, profile_types } from '../types/userTypes';
+import { ProfileActions, profile_types } from '../../types/userTypes';
 
 const initialState: boolean = false;
 

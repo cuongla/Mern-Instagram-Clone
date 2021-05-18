@@ -2,7 +2,8 @@ export const global_types = {
     THEME: 'THEME',
     MODAL: 'MODAL',
     ALERT: 'ALERT',
-    LOADING: 'LOADING'
+    LOADING: 'LOADING',
+    SOCKET: 'SOCKET'
 }
 
 // Theme
@@ -37,4 +38,10 @@ interface LoadingAction {
     payload: boolean
 }
 
-export type GlobalActions = SetAlertAction | SetThemeAction | OpenModalAction | LoadingAction;
+// Socket
+interface SocketAction {
+    type: typeof global_types.SOCKET,
+    payload: any
+}
+
+export type GlobalActions = SetAlertAction | SetThemeAction | OpenModalAction | LoadingAction | SocketAction;

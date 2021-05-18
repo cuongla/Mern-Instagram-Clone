@@ -1,5 +1,5 @@
 import { PostAction, PostState, post_types } from 'store/types/postTypes';
-import { editData } from '../actions/globalActions';
+import { editData } from '../../actions/globalActions';
 
 const initialState: PostState = {
     loading: false,

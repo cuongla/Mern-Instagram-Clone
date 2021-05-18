@@ -8,6 +8,7 @@ export class APIfeatures {
         page: number
         limit: number
     };
+    exec: any
 
     constructor(query, queryString) {
         this.query = query;

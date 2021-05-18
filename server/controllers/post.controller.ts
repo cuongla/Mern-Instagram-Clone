@@ -30,9 +30,12 @@ const postCtrl = {
     },
     getPosts: async (req: IRequest, res: Response) => {
         try {
-            const postFeatures = new APIfeatures(Posts.find({
-                user: [...req.user.following, req.user._id]
-            }), req.query).paginating();
+            const postFeatures = new APIfeatures(
+                Posts.find({
+                    user: [...req.user.following, req.user._id]
+                }),
+                req.query)
+                .paginating();
 
             const posts = await postFeatures.query.sort('-createdAt')
                 .populate("user likes", "avatar username fullname")
@@ -205,22 +208,22 @@ const postCtrl = {
     },
     savePost: async (req: IRequest, res: Response) => {
         try {
-            const user = await Users.find({ 
-                _id: req.user._id, 
-                savedPost: req.params.id 
+            const user = await Users.find({
+                _id: req.user._id,
+                savedPost: req.params.id
             });
 
             // check if post is saved 
-            if(user.length > 0) return res.status(400).json({msg: "You saved this post."})
+            if (user.length > 0) return res.status(400).json({ msg: "You saved this post." })
 
             // save post
             const seletedPost = await Users.findOneAndUpdate(
-                { _id: req.user._id }, 
-                { $push: {saved: req.params.id}}, 
-                {new: true});
-                
+                { _id: req.user._id },
+                { $push: { saved: req.params.id } },
+                { new: true });
+
             // check post
-            if(!seletedPost) return res.status(400).json({msg: 'This user does not exist.'});
+            if (!seletedPost) return res.status(400).json({ msg: 'This user does not exist.' });
 
             res.status(200).json({ msg: 'Post is saved!' })
         } catch (err) {
