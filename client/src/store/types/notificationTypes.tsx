@@ -10,15 +10,15 @@ export const notification_types = {
 }
 
 export interface NotificationData {
-    _id: string
+    _id?: string
     id: string
-    user: User
-    recipients: User[]
+    user?: User
+    recipients: User[] | string[]
     url: string
     text: string
-    content: string
-    image: string
-    isRead: boolean
+    content?: string
+    image?: string
+    isRead?: boolean
 }
 
 export interface NotificationState {
@@ -30,17 +30,17 @@ export interface NotificationState {
 // actions
 interface GetNotificationsAction {
     type: typeof notification_types.GET_NOTIFICATIONS,
-    payload: NotificationData[]
+    payload: NotificationData[] | any
 }
 
 interface CreateNotificationAction {
-    type: typeof notification_types.CREATE_NOTIFICATION,
-    payload: NotificationData[]
+    type?: typeof notification_types.CREATE_NOTIFICATION,
+    payload?: NotificationData[]
 }
 
 interface RemoveNotificationAction {
-    type: typeof notification_types.REMOVE_NOTIFICATION,
-    payload: NotificationData[]
+    type?: typeof notification_types.REMOVE_NOTIFICATION,
+    payload?: NotificationData[]
 }
 
 interface UpdateNotificationAction {
@@ -55,7 +55,7 @@ interface UpdateSoundAction {
 
 interface RemoveAllNotificationsAction {
     type: typeof notification_types.DELETE_ALL_NOTIFICATIONS,
-    payload: NotificationData
+    payload: []
 }
 
 export type NotificationActions = GetNotificationsAction | CreateNotificationAction | RemoveNotificationAction | UpdateNotificationAction | UpdateSoundAction | RemoveAllNotificationsAction;

@@ -7,10 +7,26 @@ export const message_types = {
     GET_MESSAGES: 'GET_MESSAGES',
     UPDATE_MESSAGES: 'UPDATE_MESSAGES',
     DELETE_MESSAGES: 'DELETE_MESSAGES',
-    DELETE_CHATS: 'DELETE_CHATS',
+    DELETE_CHAT: 'DELETE_CHAT',
     ONLINE_STATUS: 'ONLINE_STATUS',
     CALL: 'CALL',
     PEER: 'PEER'
+}
+
+export interface MessgeData {
+    _id: string
+    sender: User
+    recipient: User[]
+    text: string
+    media: string
+    call: Object
+}
+
+export interface ChatData {
+    recipients: User[]
+    text: string
+    media: any[]
+    call: Object
 }
 
 export interface MessageState {
@@ -52,7 +68,7 @@ interface DeleteMessagesAction {
 }
 
 interface DeleteChatAction {
-    type: typeof message_types.DELETE_CHATS,
+    type: typeof message_types.DELETE_CHAT,
     payload: MessageState
 }
 

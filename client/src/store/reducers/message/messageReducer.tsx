@@ -67,7 +67,7 @@ const messageReducer = (state = initialState, action: MessageActions) => {
                         : item
                 )
             };
-        case message_types.DELETE_CHATS:
+        case message_types.DELETE_CHAT:
             return {
                 ...state,
                 users: deleteData(state.users, action.payload),

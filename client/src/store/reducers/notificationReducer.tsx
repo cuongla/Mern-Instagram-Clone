@@ -30,7 +30,7 @@ const notificationReducer = (state = initialState, action: NotificationActions) 
             return {
                 ...state,
                 data: editData
-                    (state.data, (action.payload as NotificationData)._id, action.payload)
+                    (state.data, action.payload._id, action.payload)
             };
         case notification_types.UPDATE_SOUND:
             return {

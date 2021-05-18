@@ -24,6 +24,7 @@ export interface User {
     avatar: string
     followers: Profile[]
     following: Profile[]
+    savedPost: PostData[]
 }
 
 export interface Profile extends User {

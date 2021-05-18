@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import { IPost } from "./post.interface";
 
 export interface IUser extends Document {
     fullname: string
@@ -15,5 +16,5 @@ export interface IUser extends Document {
     followers: any
     following: any
     socketId?: string
-    savedPost: string[]
+    savedPost: IPost[]
 }

@@ -1,12 +1,14 @@
+import { Socket } from 'socket.io-client';
 import { Dispatch } from 'react';
 import { AuthState } from "store/types/authTypes";
 import { global_types } from 'store/types/globalTypes';
 import { CommentData, PostAction, PostData, post_types } from "store/types/postTypes";
-import { deleteDataAPI, patchhDataAPI, postDataAPI } from 'utils/fetchData';
+import { deleteDataAPI, patchDataAPI, postDataAPI } from 'utils/fetchData';
 import { deleteData, editData } from './globalActions';
+import { createNotification, removeNotification } from './notificationActions';
+import { NotificationActions } from 'store/types/notificationTypes';
 
-
-export const createComment = (post: PostData, newComment: any, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const createComment = (post: PostData, newComment: any, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     const newPost = {
         ...post,
         comments: [...post.comments, newComment]
@@ -29,6 +31,20 @@ export const createComment = (post: PostData, newComment: any, auth: AuthState) 
         const updatedPost = { ...post, comments: [...post.comments, newData] };
         dispatch({ type: post_types.UPDATE_POST, payload: updatedPost });
 
+        // Socket
+        socket.emit('createComment', newPost);
+
+        // Notify
+        const msg = {
+            id: res.data.newComment._id,
+            text: newComment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
+            recipients: newComment.reply ? [newComment.tag._id] : [post.user._id],
+            url: `/post/${post._id}`,
+            content: post.content,
+            image: post.images[0].url
+        }
+
+        dispatch(createNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
             type: global_types.ALERT,
@@ -46,7 +62,7 @@ export const updateComment = (comment: CommentData, post: PostData, content: str
     dispatch({ type: post_types.UPDATE_POST, payload: newPost });
 
     try {
-        await patchhDataAPI(
+        await patchDataAPI(
             `comment/${comment._id}`,
             { content },
             auth.token
@@ -70,7 +86,7 @@ export const likeComment = (comment: CommentData, post: PostData, auth: AuthStat
     dispatch({ type: post_types.UPDATE_POST, payload: newPost });
 
     try {
-        await patchhDataAPI(`comment/${comment._id}/like`, null, auth.token);
+        await patchDataAPI(`comment/${comment._id}/like`, null, auth.token);
     } catch (err) {
         dispatch({
             type: global_types.ALERT,
@@ -90,7 +106,7 @@ export const unlikeComment = (comment: CommentData, post: PostData, auth: AuthSt
     dispatch({ type: post_types.UPDATE_POST, payload: newPost });
 
     try {
-        await patchhDataAPI(`comment/${comment._id}/unlike`, null, auth.token);
+        await patchDataAPI(`comment/${comment._id}/unlike`, null, auth.token);
     } catch (err) {
         dispatch({
             type: global_types.ALERT,
@@ -101,7 +117,7 @@ export const unlikeComment = (comment: CommentData, post: PostData, auth: AuthSt
     }
 }
 
-export const deleteComment = (post: PostData, comment: CommentData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const deleteComment = (post: PostData, comment: CommentData, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     // @ts-ignore
     const deleteArr = [...post.comments.filter(cm => cm.reply === comment._id), comment];
 
@@ -118,6 +134,16 @@ export const deleteComment = (post: PostData, comment: CommentData, auth: AuthSt
     try {
         deleteArr.forEach(item => {
             deleteDataAPI(`comment/${item._id}`, auth.token);
+
+            // notification
+            const msg = {
+                id: item._id,
+                text: comment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
+                recipients: comment.reply ? [comment.tag._id] : [post.user._id],
+                url: `/post/${post._id}`,
+            }
+    
+            dispatch(removeNotification(msg, auth, socket) as NotificationActions);
         });
     } catch (err) {
         dispatch({

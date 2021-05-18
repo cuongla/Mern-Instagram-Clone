@@ -1,22 +1,27 @@
 import { Dispatch } from 'react';
 import { imageUpload } from 'utils/imageUpload';
-import { getDataAPI, patchhDataAPI, postDataAPI } from 'utils/fetchData';
-import { AuthState } from 'store/types/authTypes';
+import { getDataAPI, postDataAPI, deleteDataAPI, patchDataAPI } from 'utils/fetchData';
+import { AuthState, authTypes } from 'store/types/authTypes';
 import { PostAction, PostData, post_types } from 'store/types/postTypes';
 import { global_types } from 'store/types/globalTypes';
+import { createNotification, removeNotification } from './notificationActions';
+import { Socket } from 'socket.io-client';
+import { NotificationActions } from 'store/types/notificationTypes';
 
 interface IMedia {
     public_id: string
     url: string
 }
 
-export const createPost = (content: string, images: any[], auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const createPost = (content: string, images: any[], auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     let media: IMedia[] = [];
 
     try {
         dispatch({ type: global_types.ALERT, payload: { loading: true } });
 
         if (images.length > 0) media = await imageUpload(images);
+
+        //  create post
         const res = postDataAPI(
             'posts',
             {
@@ -31,7 +36,17 @@ export const createPost = (content: string, images: any[], auth: AuthState) => a
             payload: { ...(await res).data.newPost, user: auth.user }
         });
 
-        dispatch({ type: global_types.ALERT, payload: { loading: false } });
+        // Notify
+        const msg = {
+            id: (await res).data.newPost._id,
+            text: 'added a new post.',
+            recipients: (await res).data.newPost.user.followers,
+            url: `/post/${(await res).data.newPost._id}`,
+            content,
+            image: media[0].url
+        }
+
+        dispatch(createNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
             type: global_types.ALERT,
@@ -81,7 +96,7 @@ export const updatePost = (content: string, images: any[], auth: AuthState, stat
         dispatch({ type: global_types.ALERT, payload: { loading: true } });
 
         if (imgNewUrl.length > 0) media = await imageUpload(imgNewUrl);
-        const res = patchhDataAPI(
+        const res = patchDataAPI(
             `post/${status._id}`,
             {
                 content,
@@ -106,7 +121,7 @@ export const updatePost = (content: string, images: any[], auth: AuthState, stat
     }
 }
 
-export const likePost = (post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const likePost = (post: PostData, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     const newPost = { ...post, likes: [...post.likes, auth.user] };
 
     dispatch({
@@ -115,7 +130,19 @@ export const likePost = (post: PostData, auth: AuthState) => async (dispatch: Di
     });
 
     try {
-        await patchhDataAPI(`post/${post._id}/like`, null, auth.token);
+        await patchDataAPI(`post/${post._id}/like`, null, auth.token);
+
+        // notification
+        const msg = {
+            id: auth.user!._id,
+            text: 'like your post.',
+            recipients: [post.user._id],
+            url: `/post/${post._id}`,
+            content: post.content,
+            image: post.images[0].url
+        }
+
+        dispatch(createNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
             type: global_types.ALERT,
@@ -126,15 +153,24 @@ export const likePost = (post: PostData, auth: AuthState) => async (dispatch: Di
     }
 }
 
-export const unlikePost = (post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
-    const newPost = { ...post, likes: post.likes.filter(like => like._id !== auth.user!._id)};
+export const unlikePost = (post: PostData, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
+    const newPost = { ...post, likes: post.likes.filter(like => like._id !== auth.user!._id) };
     dispatch({
         type: post_types.UPDATE_POST,
         payload: newPost
     });
 
     try {
-        await patchhDataAPI(`post/${post._id}/unlike`, null, auth.token);
+        await patchDataAPI(`post/${post._id}/unlike`, null, auth.token);
+
+        // notification
+        const msg = {
+            id: auth.user!._id,
+            text: 'like your post.',
+            recipients: [post.user._id],
+            url: `/post/${post._id}`,
+        };
+        dispatch(removeNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
             type: global_types.ALERT,
@@ -146,11 +182,11 @@ export const unlikePost = (post: PostData, auth: AuthState) => async (dispatch: 
 }
 
 export const getPostDetail = (detailPost: PostData[], id: string, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
-    if(detailPost.every(post => post._id !== id)) {
+    if (detailPost.every(post => post._id !== id)) {
         try {
             const res = await getDataAPI(`post/${id}`, auth.token);
             dispatch({ type: post_types.GET_POST, payload: res.data.post });
-        }catch(err) {
+        } catch (err) {
             dispatch({
                 type: global_types.ALERT,
                 payload: {
@@ -158,5 +194,57 @@ export const getPostDetail = (detailPost: PostData[], id: string, auth: AuthStat
                 }
             })
         }
+    }
+}
+
+export const deletePost = (post: PostData, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
+    try {
+        const res = await deleteDataAPI(`post/${post._id}`, auth.token)
+
+        // Notify
+        const msg = {
+            id: post._id as string,
+            text: 'added a new post.',
+            recipients: res.data.newPost.user.followers,
+            url: `/post/${post._id}`,
+        }
+
+        dispatch(removeNotification(msg, auth, socket) as NotificationActions);
+    } catch (err) {
+        dispatch({
+            type: global_types.ALERT,
+            payload: { error: err.response.data.msg }
+        })
+    }
+}
+
+export const savePost = (post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+    const newUser = { ...auth.user, saved: [...auth.user!.savedPost, post._id] };
+
+    dispatch({ type: authTypes.AUTH, payload: { ...auth, user: newUser } })
+
+    try {
+        await patchDataAPI(`savePost/${post._id}`, null, auth.token)
+    } catch (err) {
+        dispatch({
+            type: global_types.ALERT,
+            payload: { error: err.response.data.msg }
+        })
+    }
+}
+
+export const unSavePost = (post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+    // @ts-ignore
+    const newUser = { ...auth.user, saved: auth.user!.savedPost.filter(id => id !== post._id) };
+
+    dispatch({ type: authTypes.AUTH, payload: { ...auth, user: newUser } });
+
+    try {
+        await patchDataAPI(`unSavePost/${post._id}`, null, auth.token)
+    } catch (err) {
+        dispatch({
+            type: global_types.ALERT,
+            payload: { error: err.response.data.msg }
+        })
     }
 }

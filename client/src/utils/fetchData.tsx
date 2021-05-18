@@ -17,7 +17,7 @@ export const postDataAPI = async (url: string, data?: any, token?: string) => aw
 );
 
 
-export const patchhDataAPI = async (url: string, data: any, token: string) => await axios.patch(`/api/${url}`,
+export const patchDataAPI = async (url: string, data: any, token: string) => await axios.patch(`/api/${url}`,
     data,
     {
         headers: {

@@ -7,11 +7,11 @@ router.post('/notification', isAuth, notificationCtrl.addNotification);
 
 router.delete('/notification/:id', isAuth, notificationCtrl.removeNotification);
 
-router.get('/notifies', isAuth, notificationCtrl.getNotifications);
+router.get('/notifications', isAuth, notificationCtrl.getNotifications);
 
 router.patch('/isReadnotification/:id', isAuth, notificationCtrl.isReadNotification);
 
-router.delete('/deleteAllnotification', isAuth, notificationCtrl.removeAllNotification);
+router.delete('/delete_all_notifications', isAuth, notificationCtrl.removeAllNotification);
 
 
 export default router;
