@@ -10,7 +10,7 @@ interface FollowBtnProps {
 
 const FollowBtn: React.FC<FollowBtnProps> = ({ user }) => {
     const dispatch = useDispatch();
-    const { auth, profile } = useSelector((state: RootState) => state);
+    const { auth, profile, socket } = useSelector((state: RootState) => state);
     const [followed, setFollowed] = useState(false);
     const [load, setLoad] = useState(false);
 
@@ -25,7 +25,7 @@ const FollowBtn: React.FC<FollowBtnProps> = ({ user }) => {
 
         setFollowed(true);
         setLoad(true);
-        await dispatch(follow(profile.users, user, auth));
+        await dispatch(follow(profile.users, user, auth, socket));
         setLoad(false);
     }
 
@@ -34,7 +34,7 @@ const FollowBtn: React.FC<FollowBtnProps> = ({ user }) => {
 
         setFollowed(false);
         setLoad(true);
-        dispatch(unfollow(profile.users, user, auth));
+        dispatch(unfollow(profile.users, user, auth, socket));
         setLoad(false);
     }
 

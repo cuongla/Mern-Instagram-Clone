@@ -12,12 +12,12 @@ interface CommentMenuProps {
 
 const CommentMenu: React.FC<CommentMenuProps> = ({ post, comment, setOnEdit }) => {
     const dispatch = useDispatch();
-    const { auth } = useSelector((state: RootState) => state);
+    const { auth, socket } = useSelector((state: RootState) => state)
 
     const handleRemove = () => {
         // check for comment owner
         if (post.user._id === auth.user._id || comment.user._id === auth.user._id) {
-            dispatch(deleteComment(post, comment, auth));
+            dispatch(deleteComment(post, comment, auth, socket));
         }
     }
 

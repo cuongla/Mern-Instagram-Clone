@@ -208,10 +208,7 @@ const postCtrl = {
     },
     savePost: async (req: IRequest, res: Response) => {
         try {
-            const user = await Users.find({
-                _id: req.user._id,
-                savedPost: req.params.id
-            });
+            const user = await Users.find({ _id: req.user._id });
 
             // check if post is saved 
             if (user.length > 0) return res.status(400).json({ msg: "You saved this post." })
@@ -234,7 +231,7 @@ const postCtrl = {
         try {
             const savedPosts = await Users.findOneAndUpdate(
                 { _id: req.user._id },
-                { $pull: { savedPost: req.params.id } },
+                { $pull: { savedPost: req.params.id} },
                 { new: true });
 
             if (!savedPosts) return res.status(400).json({ msg: 'This user does not exist.' });

@@ -1,6 +1,6 @@
-import { PostData } from "./postTypes"
+import { IPostData } from "./postTypes"
 
-export const discover_types = {
+export const discover_constants = {
     LOADING_DISCOVER: 'LOADING_DISCOVER',
     GET_DISCOVER_POSTS: 'GET_DISCOVER_POSTS',
     UPDATE_DISCOVER_POSTS: 'UPDATE_DISCOVER_POSTS'
@@ -9,7 +9,7 @@ export const discover_types = {
 // state
 export interface DiscoverState {
     loading: false
-    posts: PostData[]
+    posts: IPostData[]
     result: 9
     page: 2
     firstLoad: boolean
@@ -17,17 +17,17 @@ export interface DiscoverState {
 
 // actions
 interface LoadingDiscoverAction {
-    type: typeof discover_types.LOADING_DISCOVER,
+    type: typeof discover_constants.LOADING_DISCOVER,
     payload: any
 }
 
 interface GetDicoverPostsAction {
-    type: typeof discover_types.GET_DISCOVER_POSTS,
+    type: typeof discover_constants.GET_DISCOVER_POSTS,
     payload: DiscoverState
 }
 
 interface UpdateDicoverPostsAction {
-    type: typeof discover_types.UPDATE_DISCOVER_POSTS,
+    type: typeof discover_constants.UPDATE_DISCOVER_POSTS,
     payload: DiscoverState
 }
 

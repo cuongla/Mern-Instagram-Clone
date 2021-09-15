@@ -1,4 +1,4 @@
-import { DiscoverActions, DiscoverState, discover_types } from "store/types/discoverTypes";
+import { DiscoverActions, DiscoverState, discover_constants } from "typings/discoverTypes";
 
 const initialState: DiscoverState = {
     loading: false,
@@ -10,19 +10,19 @@ const initialState: DiscoverState = {
 
 const discoverReducer = (state = initialState, action: DiscoverActions) => {
     switch (action.type) {
-        case discover_types.LOADING_DISCOVER:
+        case discover_constants.LOADING_DISCOVER:
             return {
                 ...state,
                 loading: action.payload
             }
-        case discover_types.GET_DISCOVER_POSTS:
+        case discover_constants.GET_DISCOVER_POSTS:
             return {
                 ...state,
                 posts: action.payload.posts,
                 result: action.payload.result,
                 firstLoad: true
             }
-        case discover_types.UPDATE_DISCOVER_POSTS:
+        case discover_constants.UPDATE_DISCOVER_POSTS:
             return {
                 ...state,
                 posts: action.payload.posts,

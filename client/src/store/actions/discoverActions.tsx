@@ -10,7 +10,6 @@ export const getDiscoverPosts = (token: string) => async (dispatch: Dispatch<Dis
 
         // get discover posts
         const res = await getDataAPI(`posts/discover`, token);
-        console.log(res);
         dispatch({
             type: discover_types.GET_DISCOVER_POSTS,
             payload: res.data

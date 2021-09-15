@@ -13,7 +13,7 @@ export interface PostCardProps {
 
 const CardFooter: React.FC<PostCardProps> = ({ post }) => {
     const dispatch = useDispatch();
-    const { auth } = useSelector((state: RootState) => state);
+    const { auth, socket } = useSelector((state: RootState) => state);
     const [isLike, setIsLike] = useState(false);
     const [loadLike, setLoadLike] = useState(false);
 
@@ -29,7 +29,7 @@ const CardFooter: React.FC<PostCardProps> = ({ post }) => {
 
         // like post
         setLoadLike(true);
-        await dispatch(likePost(post, auth));
+        await dispatch(likePost(post, auth, socket));
         setLoadLike(false);
     }
 
@@ -39,7 +39,7 @@ const CardFooter: React.FC<PostCardProps> = ({ post }) => {
 
         // unlike post
         setLoadLike(true);
-        await dispatch(unlikePost(post, auth));
+        await dispatch(unlikePost(post, auth, socket));
         setLoadLike(false);
     }
 

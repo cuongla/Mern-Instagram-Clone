@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from 'store';
 
 const spawnNotification = (body: string, icon: any, url: string, title: string) => {
     let options = {
@@ -14,7 +15,7 @@ const spawnNotification = (body: string, icon: any, url: string, title: string) 
 }
 
 const SocketClient = () => {
-    const { auth, socket, notify, online, call } = useSelector(state => state)
+    const { auth, socket, notification, online, call } = useSelector((state: RootState) => state)
     const dispatch = useDispatch()
 
     const audioRef = useRef()
@@ -26,7 +27,7 @@ const SocketClient = () => {
 
     // Likes
     useEffect(() => {
-        socket.on('likeToClient', newPost => {
+        socket.on('likeToClient', (newPost: any) => {
             dispatch({ type: POST_TYPES.UPDATE_POST, payload: newPost })
         })
 

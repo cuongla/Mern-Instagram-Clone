@@ -1,11 +1,11 @@
-import { GlobalActions, global_types } from '../types/globalTypes';
+import { GlobalActions, global_constants } from 'typings/globalTypes';
 
 
 const initialState: boolean = false;
 
 const modalReducer = (state = initialState, action: GlobalActions) => {
-    switch(action.type) {
-        case global_types.MODAL:
+    switch (action.type) {
+        case global_constants.MODAL:
             return action.payload;
         default:
             return state;

@@ -1,44 +1,46 @@
-import { ProfileActions, ProfileState, profile_types } from '../../types/userTypes';
+import { ProfileActions, ProfileState, user_constants } from 'typings/userTypes';
 import { editData } from '../../actions/globalActions';
+
 
 const initialState: ProfileState = {
     users: [],
     posts: [],
     loading: false,
-    ids: []
+    ids: [],
+    profile: null
 };
 
 const profileReducer = (state = initialState, action: ProfileActions) => {
     switch (action.type) {
-        case profile_types.LOADING:
+        case user_constants.USER_LOADING:
             return {
                 ...state,
                 loading: action.payload
             }
-        case profile_types.GET_PROFILE:
+        case user_constants.GET_PROFILE:
             return {
                 ...state,
-                users: [...state.users, action.payload.user]
+                profile: action.payload
             }
-        case profile_types.FOLLOW:
-            return {
-                ...state,
-                users: editData(state.users, action.payload._id, action.payload)
-            }
-        case profile_types.UNFOLLOW:
+        case user_constants.FOLLOW:
             return {
                 ...state,
                 users: editData(state.users, action.payload._id, action.payload)
             }
-        case profile_types.GET_IDS:
+        case user_constants.UNFOLLOW:
+            return {
+                ...state,
+                users: editData(state.users, action.payload._id, action.payload)
+            }
+        case user_constants.GET_IDS:
             return {
                 ...state,
                 ids: [...state.ids, action.payload]
             }
-        case profile_types.GET_USER_POSTS:
+        case user_constants.GET_USER_POSTS:
             return {
                 ...state,
-                posts: action.payload.posts
+                posts: action.payload
             }
         default:
             return state;

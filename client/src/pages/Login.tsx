@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import { login } from 'store/actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +25,7 @@ const Login: React.FC = () => {
         setUserData({ ...userData, [name]: value });
     }
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         dispatch(login(userData));
     }

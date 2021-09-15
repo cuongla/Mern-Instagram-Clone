@@ -7,7 +7,7 @@ import { global_types } from 'store/types/globalTypes';
 
 const StatusModal = () => {
     const dispatch = useDispatch();
-    const { auth, theme, status } = useSelector((state: RootState) => state);
+    const { auth, theme, status, socket } = useSelector((state: RootState) => state);
     const [content, setContent] = useState('');
     const [images, setImages] = useState([]);
     const [stream, setStream] = useState(false);
@@ -90,7 +90,7 @@ const StatusModal = () => {
         if(status.onEdit) {
             dispatch(updatePost(content, images, auth, status));
         } else {
-            dispatch(createPost(content, images, auth));
+            dispatch(createPost(content, images, auth, socket));
         }
 
         // clear form & close form

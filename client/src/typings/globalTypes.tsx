@@ -1,4 +1,4 @@
-export const global_types = {
+export const global_constants = {
     THEME: 'THEME',
     MODAL: 'MODAL',
     ALERT: 'ALERT',
@@ -8,7 +8,7 @@ export const global_types = {
 
 // Theme
 interface SetThemeAction {
-    type: typeof global_types.THEME
+    type: typeof global_constants.THEME
     payload: boolean
 }
 
@@ -21,26 +21,26 @@ export interface AlertState {
 }
 
 interface SetAlertAction {
-    type: typeof global_types.ALERT
+    type: typeof global_constants.ALERT
     payload: AlertState
 }
 
 
 // Modal 
 interface OpenModalAction {
-    type: typeof global_types.MODAL
+    type: typeof global_constants.MODAL
     payload: boolean
 }
 
 // loading
 interface LoadingAction {
-    type: typeof global_types.LOADING,
+    type: typeof global_constants.LOADING,
     payload: boolean
 }
 
 // Socket
 interface SocketAction {
-    type: typeof global_types.SOCKET,
+    type: typeof global_constants.SOCKET,
     payload: any
 }
 

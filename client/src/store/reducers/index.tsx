@@ -17,8 +17,6 @@ import peer from './message/peerReducer'
 import alert from './alertReducer'
 import modal from './modalReducer'
 import notification from './notificationReducer'
-// theme
-import theme from './themeReducer';
 // socket
 import socket from './socketReducer'
 
@@ -39,6 +37,5 @@ export default combineReducers({
     alert,
     modal,
     socket,
-    theme,
     notification
 });

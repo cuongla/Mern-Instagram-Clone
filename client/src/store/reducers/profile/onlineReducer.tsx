@@ -1,10 +1,10 @@
-import { ProfileActions, profile_types } from '../../types/userTypes';
+import { ProfileActions, user_constants } from 'typings/userTypes';
 
 const onlineReducer = (state = [], action: ProfileActions) => {
-    switch (action.type){
-        case profile_types.ONLINE:
+    switch (action.type) {
+        case user_constants.ONLINE:
             return [...state, action.payload];
-        case profile_types.OFFLINE:
+        case user_constants.OFFLINE:
             return state.filter(item => item !== action.payload)
         default:
             return state;

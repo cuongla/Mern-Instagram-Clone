@@ -1,6 +1,6 @@
-import { User } from "./userTypes";
+import { IUserData } from "./userTypes";
 
-export const message_types = {
+export const message_constants = {
     ADD_USER: 'ADD_USER',
     ADD_MESSAGE: 'ADD_MESSAGE',
     GET_CHATS: 'GET_CHATS',
@@ -15,22 +15,22 @@ export const message_types = {
 
 export interface MessgeData {
     _id: string
-    sender: User
-    recipient: User[]
+    sender: IUserData
+    recipient: IUserData[]
     text: string
     media: string
     call: Object
 }
 
 export interface ChatData {
-    recipients: User[]
+    recipients: IUserData[]
     text: string
     media: any[]
     call: Object
 }
 
 export interface MessageState {
-    users: User[]
+    users: IUserData[]
     resultUsers: number
     data: any
     firstLoad: boolean
@@ -38,52 +38,52 @@ export interface MessageState {
 
 // actions
 interface AddUserAction {
-    type: typeof message_types.ADD_USER,
-    payload: User[]
+    type: typeof message_constants.ADD_USER,
+    payload: IUserData[]
 }
 
 interface AddMessageAction {
-    type: typeof message_types.ADD_MESSAGE,
+    type: typeof message_constants.ADD_MESSAGE,
     payload: any
 }
 
 interface GetChatsAction {
-    type: typeof message_types.GET_CHATS,
+    type: typeof message_constants.GET_CHATS,
     payload: MessageState
 }
 
 interface GetMessagesAction {
-    type: typeof message_types.GET_MESSAGES,
+    type: typeof message_constants.GET_MESSAGES,
     payload: any
 }
 
 interface UpdateMessagesAction {
-    type: typeof message_types.UPDATE_MESSAGES,
+    type: typeof message_constants.UPDATE_MESSAGES,
     payload: any
 }
 
 interface DeleteMessagesAction {
-    type: typeof message_types.DELETE_MESSAGES,
+    type: typeof message_constants.DELETE_MESSAGES,
     payload: any
 }
 
 interface DeleteChatAction {
-    type: typeof message_types.DELETE_CHAT,
+    type: typeof message_constants.DELETE_CHAT,
     payload: MessageState
 }
 
 interface CheckOnlineStatusAction {
-    type: typeof message_types.ONLINE_STATUS,
-    payload: User[]
+    type: typeof message_constants.ONLINE_STATUS,
+    payload: IUserData[]
 }
 
 interface CallAction {
-    type: typeof message_types.CALL,
+    type: typeof message_constants.CALL,
     payload: any
 }
 
 interface PeerAction {
-    type: typeof message_types.PEER,
+    type: typeof message_constants.PEER,
     payload: any
 }
 

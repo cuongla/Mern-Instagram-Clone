@@ -38,11 +38,11 @@ const notificationCtrl = {
     getNotifications: async (req: IRequest, res: Response) => {
         try {
             const notifications = await Notifications
-                .find({recipients: req.user._id})
+                .find({ recipients: req.user._id })
                 .sort('-createdAt')
                 .populate('user', 'avatar username');
-            
-            return res.json({notifications});
+
+            return res.json({ notifications });
         } catch (err) {
             return res.status(500).json({
                 msg: err.message
@@ -51,7 +51,7 @@ const notificationCtrl = {
     },
     isReadNotification: async (req: IRequest, res: Response) => {
         try {
-            const notification = await Notifications.findOneAndUpdate({_id: req.params.id}, {
+            const notification = await Notifications.findOneAndUpdate({ _id: req.params.id }, {
                 isRead: true
             });
 
@@ -64,9 +64,9 @@ const notificationCtrl = {
     },
     removeAllNotification: async (req: IRequest, res: Response) => {
         try {
-            const notifictions = await Notifications.deleteMany({recipients: req.user._id})
-            
-            return res.json({notifictions})
+            const notifictions = await Notifications.deleteMany({ recipients: req.user._id })
+
+            return res.json({ notifictions })
         } catch (err) {
             return res.status(500).json({
                 msg: err.message

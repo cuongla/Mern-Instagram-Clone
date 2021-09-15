@@ -11,6 +11,7 @@ export interface IComment extends Document {
 }
 
 export interface IPost extends Document {
+    id: string
     content: string
     images: any[]
     likes: IUser[]

@@ -6,20 +6,20 @@ import { RootState } from 'store';
 import LoadIcon from '../images/loading.gif';
 
 const Home: React.FC = () => {
-    const { homePosts } = useSelector((state: RootState) => state);
+    const { posts } = useSelector((state: RootState) => state);
 
     return (
         <div className="home roq mx-0">
             <div className="col-md-8">
                 <Status />
-                { homePosts.loading 
+                { posts.loading 
                     ? (
                         <img 
                             src={LoadIcon} 
                             alt="loading" 
                             className="d-block mx-auto" />
                     )
-                    : homePosts.result === 0 
+                    : posts.result === 0 
                         ? <h2 className="text-center">No Post</h2>
                         : <Posts />
                 }

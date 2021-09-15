@@ -1,7 +1,7 @@
-import { PostAction, PostState, post_types } from 'store/types/postTypes';
+import { PostAction, IPostState, post_constants } from 'typings/postTypes';
 import { editData } from '../../actions/globalActions';
 
-const initialState: PostState = {
+const initialState: IPostState = {
     loading: false,
     posts: [],
     result: 0,
@@ -10,24 +10,24 @@ const initialState: PostState = {
 
 const authReducer = (state = initialState, action: PostAction) => {
     switch (action.type) {
-        case post_types.CREATE_POST:
+        case post_constants.CREATE_POST:
             return {
                 ...state,
                 posts: [action.payload, ...state.posts]
             }
-        case post_types.LOADING_POST:
+        case post_constants.LOADING_POST:
             return {
                 ...state,
                 loading: action.payload
             }
-        case post_types.GET_POSTS:
+        case post_constants.GET_POSTS:
             return {
                 ...state,
                 result: action.payload.result,
                 page: action.payload.page,
                 posts: action.payload.posts
             }
-        case post_types.UPDATE_POST:
+        case post_constants.UPDATE_POST:
             return {
                 ...state,
                 posts: editData(

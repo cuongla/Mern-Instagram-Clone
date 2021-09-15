@@ -1,33 +1,32 @@
-import { PostData } from './postTypes';
+import { IPostData } from './postTypes';
 
-export const profile_types = {
-    LOADING: 'LOADING',
+export const user_constants = {
+    USER_LOADING: 'USER_LOADING',
     GET_PROFILE: 'GET_PROFILE',
     FOLLOW: 'FOLLOW',
     UNFOLLOW: 'UNFOLLOW',
     STATUS: 'STATUS',
     GET_IDS: 'GET_IDS',
     GET_USER_POSTS: 'GET_USER_POSTS',
-    GET_SUGGESSTION_USERS: 'GET_SUGGESSTION_USERS',
+    GET_SUGGESSTION_FRIENDS: 'GET_SUGGESSTION_FRIENDS',
     ONLINE: 'ONLINE',
     OFFLINE: 'OFFLINE'
 }
 
-export interface User {
+export interface IUserData {
     _id: string
     id: string
     fullname: string
     username: string
     email: string
-    password: string
     gender: string
     avatar: string
-    followers: Profile[]
-    following: Profile[]
-    savedPost: PostData[]
+    followers: IProfile[]
+    following: IProfile[]
+    savedPost: IPostData[]
 }
 
-export interface Profile extends User {
+export interface IProfile extends IUserData {
     mobile: string
     story: string
     website: string
@@ -35,14 +34,15 @@ export interface Profile extends User {
 }
 
 export interface ProfileState {
-    users: Profile[]
-    posts?: any
+    users: IProfile[]
+    profile: IProfile | null
+    posts: IPostData[]
     loading: boolean
     ids: string[]
 }
 
 export interface Suggestion_State {
-    users: Profile[]
+    users: IUserData[]
     loading: boolean
 }
 
@@ -55,56 +55,61 @@ export interface EditProfileData {
     gender: string
 }
 
+interface IUserFetchData {
+    _id: string
+    msg: string
+}
+
 
 // actions
 interface SetLoadingUserAction {
-    type: typeof profile_types.LOADING,
+    type: typeof user_constants.USER_LOADING,
     payload: boolean
 }
 
 interface GetUserAction {
-    type: typeof profile_types.GET_PROFILE,
-    payload: any
+    type: typeof user_constants.GET_PROFILE,
+    payload: IProfile
 }
 
 interface FollowUserAction {
-    type: typeof profile_types.FOLLOW,
-    payload: any
+    type: typeof user_constants.FOLLOW,
+    payload: IUserFetchData
 }
 
 interface UnfollowUserAction {
-    type: typeof profile_types.UNFOLLOW,
-    payload: any
+    type: typeof user_constants.UNFOLLOW,
+    payload: IUserFetchData
 }
 
 interface StatusAction {
-    type: typeof profile_types.STATUS,
+    type: typeof user_constants.STATUS,
     payload: boolean
 }
 
 interface GetUserIdAction {
-    type: typeof profile_types.GET_IDS,
+    type: typeof user_constants.GET_IDS,
     payload: string[]
 }
 
 interface GetUserPostsAction {
-    type: typeof profile_types.GET_USER_POSTS,
-    payload: PostData[]
+    type: typeof user_constants.GET_USER_POSTS,
+    payload: IPostData[]
 }
 
 interface GetSuggestionUsersAction {
-    type: typeof profile_types.GET_SUGGESSTION_USERS,
-    payload: User[]
+    type: typeof user_constants.GET_SUGGESSTION_FRIENDS,
+    payload: IUserData[]
 }
 
 interface UserOnlineAction {
-    type: typeof profile_types.ONLINE,
-    payload: User[]
+    type: typeof user_constants.ONLINE,
+    payload: IUserData[]
 }
 
 interface UserOfflineAction {
-    type: typeof profile_types.OFFLINE,
-    payload: User[]
+    type: typeof user_constants.OFFLINE,
+    payload: IUserData[]
 }
 
 export type ProfileActions = SetLoadingUserAction | GetUserAction | FollowUserAction | UnfollowUserAction | StatusAction | GetUserIdAction | GetUserPostsAction | GetSuggestionUsersAction | UserOnlineAction | UserOfflineAction;

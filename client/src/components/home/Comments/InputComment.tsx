@@ -14,7 +14,7 @@ interface InputCommentsProps {
 
 const InputComment: React.FC<InputCommentsProps> = ({ post, children, targetComment, onReply, setOnReply }) => {
     const dispatch = useDispatch();
-    const { auth } = useSelector((state: RootState) => state);
+    const { auth, socket } = useSelector((state: RootState) => state);
     const [content, setContent] = useState('');
 
     const handleSubmit = (e: FormEvent) => {
@@ -33,7 +33,7 @@ const InputComment: React.FC<InputCommentsProps> = ({ post, children, targetComm
             tag: onReply && targetComment?.user
         }
 
-        dispatch(createComment(post, newComment, auth));
+        dispatch(createComment(post, newComment, auth, socket));
         if(setOnReply) return setOnReply(false);
         setContent('');
     }

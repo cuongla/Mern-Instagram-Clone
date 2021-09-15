@@ -1,8 +1,8 @@
-import { GlobalActions, global_types } from '../types/globalTypes';
+import { GlobalActions, global_constants } from 'typings/globalTypes';
 
 const socketReducer = (state = [], action: GlobalActions) => {
     switch (action.type) {
-        case global_types.SOCKET:
+        case global_constants.SOCKET:
             return action.payload;
         default:
             return state;

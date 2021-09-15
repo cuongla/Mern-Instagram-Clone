@@ -12,8 +12,8 @@ import { DiscoverState } from 'store/types/discoverTypes';
 
 const Discover = () => {
     const dispatch = useDispatch();
-    const { auth, discover } = useSelector((state: RootState) => state);
-    const discoverData = discover as DiscoverState;
+    const { auth, discoverPosts } = useSelector((state: RootState) => state);
+    const discoverData = discoverPosts as DiscoverState;
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
