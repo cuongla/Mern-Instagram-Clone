@@ -1,4 +1,5 @@
-import { profile_types, ProfileActions, Suggestion_State } from '../../types/userTypes';
+import { ProfileActions, Suggestion_State, UserTypes } from 'types/userTypes';
+import { GlobalTypes } from 'types/globalTypes'
 
 const initialState: Suggestion_State = {
     loading: false,
@@ -7,13 +8,13 @@ const initialState: Suggestion_State = {
 
 
 const suggestionsReducer = (state = initialState, action: ProfileActions) => {
-    switch (action.type){
-        case profile_types.LOADING:
+    switch (action.type) {
+        case GlobalTypes.LOADING:
             return {
                 ...state,
                 loading: action.payload
             };
-        case profile_types.GET_SUGGESSTION_USERS:
+        case UserTypes.GET_SUGGESSTION_FRIENDS:
             return {
                 ...state,
                 users: action.payload.users

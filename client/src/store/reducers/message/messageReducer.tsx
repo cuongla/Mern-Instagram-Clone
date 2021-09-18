@@ -1,16 +1,18 @@
-import { MessageActions, MessageState, message_constants } from "typings/messageTypes";
+import { MessageActions, MessageState, MessageTypes } from "types/messageTypes";
 import { editData, deleteData } from '../../actions/globalActions';
 
 const initialState: MessageState = {
     users: [],
     resultUsers: 0,
     data: [],
-    firstLoad: false
+    firstLoad: false,
+    newArr: [],
+    result: []
 }
 
 const messageReducer = (state = initialState, action: MessageActions) => {
     switch (action.type) {
-        case message_constants.ADD_USER:
+        case MessageTypes.ADD_USER:
             if (state.users.every(item => item._id !== action.payload._id)) {
                 return {
                     ...state,
@@ -18,7 +20,7 @@ const messageReducer = (state = initialState, action: MessageActions) => {
                 };
             }
             return state;
-        case message_constants.ADD_MESSAGE:
+        case MessageTypes.ADD_MESSAGE:
             return {
                 ...state,
                 data: state.data.map((item: any) =>
@@ -41,24 +43,24 @@ const messageReducer = (state = initialState, action: MessageActions) => {
                         : user
                 )
             };
-        case message_constants.GET_CHATS:
+        case MessageTypes.GET_CHATS:
             return {
                 ...state,
                 users: action.payload.newArr,
                 resultUsers: action.payload.result,
                 firstLoad: true
             };
-        case message_constants.GET_MESSAGES:
+        case MessageTypes.GET_MESSAGES:
             return {
                 ...state,
                 data: [...state.data, action.payload]
             };
-        case message_constants.UPDATE_MESSAGES:
+        case MessageTypes.UPDATE_MESSAGES:
             return {
                 ...state,
                 data: editData(state.data, action.payload._id, action.payload)
             };
-        case message_constants.DELETE_MESSAGES:
+        case MessageTypes.DELETE_MESSAGES:
             return {
                 ...state,
                 data: state.data.map((item: any) =>
@@ -67,16 +69,17 @@ const messageReducer = (state = initialState, action: MessageActions) => {
                         : item
                 )
             };
-        case message_constants.DELETE_CHAT:
+        case MessageTypes.DELETE_CHAT:
             return {
                 ...state,
-                users: deleteData(state.users, action.payload),
+                users: deleteData(state.users, action.payload as MessageState),
                 data: deleteData(state.data, action.payload)
             };
-        case message_constants.ONLINE_STATUS:
+        case MessageTypes.ONLINE_STATUS:
             return {
                 ...state,
                 users: state.users.map(user =>
+                    // @ts-ignore
                     action.payload.includes(user._id)
                         ? { ...user, online: true }
                         : { ...user, online: false }

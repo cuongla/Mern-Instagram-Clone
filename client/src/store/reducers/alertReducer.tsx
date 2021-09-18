@@ -1,4 +1,4 @@
-import { GlobalActions, global_constants, AlertState } from 'typings/globalTypes';
+import { GlobalActions, GlobalTypes, AlertState } from 'types/globalTypes';
 
 const initialState: AlertState = {
     msg: '',
@@ -9,7 +9,7 @@ const initialState: AlertState = {
 
 const notifyReducer = (state = initialState, action: GlobalActions) => {
     switch (action.type) {
-        case global_constants.ALERT:
+        case GlobalTypes.ALERT:
             return action.payload;
         default:
             return state;

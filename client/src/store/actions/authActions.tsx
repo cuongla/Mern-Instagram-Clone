@@ -1,15 +1,15 @@
 import { Dispatch } from 'react';
 import { postDataAPI } from 'utils/fetchData';
-import { AuthAction, LoginData, RegisterData } from '../types/authTypes';
+import { AuthAction, LoginData, RegisterData } from 'types/authTypes';
 import { formValidate } from 'utils/formValidate';
-import { global_types } from '../types/globalTypes';
+import { global_constants } from 'types/globalTypes';
 
 export const register = (data: RegisterData) => async (dispatch: Dispatch<AuthAction>) => {
     const validData = formValidate(data);
 
     if (validData.errLength > 0) {
         return dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 errMsg: validData.errMsg
             }
@@ -17,7 +17,7 @@ export const register = (data: RegisterData) => async (dispatch: Dispatch<AuthAc
     };
 
     try {
-        dispatch({ type: global_types.ALERT, payload: { loading: true } });
+        dispatch({ type: global_constants.ALERT, payload: { loading: true } });
 
         // regiter user
         const res = await postDataAPI('register', data);
@@ -32,7 +32,7 @@ export const register = (data: RegisterData) => async (dispatch: Dispatch<AuthAc
         localStorage.setItem('auth', 'true');
 
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 msg: res.data.msg
             }
@@ -40,7 +40,7 @@ export const register = (data: RegisterData) => async (dispatch: Dispatch<AuthAc
     } catch (err) {
         console.log(err);
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data
             }
@@ -50,7 +50,7 @@ export const register = (data: RegisterData) => async (dispatch: Dispatch<AuthAc
 
 export const login = (data: LoginData) => async (dispatch: Dispatch<AuthAction>) => {
     try {
-        dispatch({ type: global_types.ALERT, payload: { loading: true } });
+        dispatch({ type: global_constants.ALERT, payload: { loading: true } });
 
         // login user
         const res = await postDataAPI('login', data);
@@ -64,14 +64,14 @@ export const login = (data: LoginData) => async (dispatch: Dispatch<AuthAction>)
         });
 
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 msg: res.data.msg
             }
         });
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -86,7 +86,7 @@ export const logout = () => async (dispatch: Dispatch<AuthAction>) => {
         window.location.href = "/"
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -99,7 +99,7 @@ export const refreshToken = () => async (dispatch: Dispatch<AuthAction>) => {
 
     if (localData) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 loading: true
             }
@@ -117,12 +117,12 @@ export const refreshToken = () => async (dispatch: Dispatch<AuthAction>) => {
             });
 
             dispatch({
-                type: global_types.ALERT,
+                type: global_constants.ALERT,
                 payload: {}
             });
         } catch (err) {
             dispatch({
-                type: global_types.ALERT,
+                type: global_constants.ALERT,
                 payload: {
                     error: err.response
                 }

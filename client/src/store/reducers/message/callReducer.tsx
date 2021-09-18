@@ -1,8 +1,8 @@
-import { MessageActions, message_constants } from 'typings/messageTypes';
+import { MessageActions, MessageTypes } from 'types/messageTypes';
 
 const callReducer = (state = null, action: MessageActions) => {
     switch (action.type) {
-        case message_constants.CALL:
+        case MessageTypes.CALL:
             return action.payload;
         default:
             return state;
@@ -10,4 +10,4 @@ const callReducer = (state = null, action: MessageActions) => {
 }
 
 
-export default callReducer
+export default callReducer;

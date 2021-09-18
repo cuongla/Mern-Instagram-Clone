@@ -1,38 +1,40 @@
 import { Dispatch } from 'react';
-import { AuthState } from 'store/types/authTypes';
-import { Profile, ProfileActions, profile_types } from '../types/userTypes';
 import { getDataAPI } from 'utils/fetchData';
-import { global_types } from '../types/globalTypes';
-import { authTypes } from '../types/authTypes';
 import { imageUpload } from 'utils/imageUpload';
 import { patchDataAPI } from 'utils/fetchData';
 import { deleteData } from 'store/actions/globalActions';
 import { Socket } from 'socket.io-client';
 import { createNotification, removeNotification } from './notificationActions';
-import { NotificationActions } from 'store/types/notificationTypes';
+import { NotificationActions } from 'types/notificationTypes';
 
-export const getProfile = (id: string, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
-    dispatch({ type: profile_types.GET_IDS, payload: id });
+// typings
+import { IAuthState } from 'types/authTypes';
+import { IProfile, ProfileActions, user_constants } from 'types/userTypes';
+import { global_types } from 'types/globalTypes';
+import { authTypes } from 'types/authTypes';
+
+export const getProfile = (id: string, auth: IAuthState) => async (dispatch: Dispatch<ProfileActions>) => {
+    dispatch({ type: user_constants.GET_IDS, payload: id });
 
     try {
-        dispatch({ type: profile_types.LOADING, payload: true });
+        dispatch({ type: user_constants.LOADING, payload: true });
 
         // get user from server
         const profileData = await getDataAPI(`/user/${id}`, auth.token);
         dispatch({
-            type: profile_types.GET_PROFILE,
+            type: user_constants.GET_PROFILE,
             payload: profileData.data
         });
 
         // get user posts
         const postData = await getDataAPI(`/user_posts/${id}`, auth.token);
         dispatch({
-            type: profile_types.GET_USER_POSTS,
+            type: user_constants.GET_USER_POSTS,
             payload: postData.data
         });
 
         // stop loading
-        dispatch({ type: profile_types.LOADING, payload: false });
+        dispatch({ type: user_constants.LOADING, payload: false });
     } catch (err) {
         dispatch({
             type: global_types.ALERT,
@@ -43,7 +45,7 @@ export const getProfile = (id: string, auth: AuthState) => async (dispatch: Disp
     }
 }
 
-export const updateProfileUser = (userData: any, avatar: any, auth: AuthState) => async (dispatch: Dispatch<ProfileActions>) => {
+export const updateProfileUser = (userData: any, avatar: any, auth: IAuthState) => async (dispatch: Dispatch<ProfileActions>) => {
     if (!userData.fullname) return dispatch({
         type: global_types.ALERT,
         payload: { error: 'Please add your full name.' }
@@ -98,7 +100,7 @@ export const updateProfileUser = (userData: any, avatar: any, auth: AuthState) =
     }
 }
 
-export const follow = (users: Profile[], user: Profile, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<ProfileActions | NotificationActions>) => {
+export const follow = (users: Profile[], user: Profile, auth: IAuthState, socket: Socket) => async (dispatch: Dispatch<ProfileActions | NotificationActions>) => {
     let newUser = { ...user, followers: [...user.followers, auth.user] };
     if (users.every(item => item._id !== user._id)) {
         newUser = {
@@ -118,7 +120,7 @@ export const follow = (users: Profile[], user: Profile, auth: AuthState, socket:
 
     // follow user
     dispatch({
-        type: profile_types.FOLLOW,
+        type: user_constants.FOLLOW,
         payload: newUser
     });
 
@@ -155,7 +157,7 @@ export const follow = (users: Profile[], user: Profile, auth: AuthState, socket:
     }
 }
 
-export const unfollow = (users: Profile[], user: Profile, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<ProfileActions | NotificationActions>) => {
+export const unfollow = (users: Profile[], user: Profile, auth: IAuthState, socket: Socket) => async (dispatch: Dispatch<ProfileActions | NotificationActions>) => {
     let newUser;
 
     if (users.every(item => item._id !== user._id)) {
@@ -176,7 +178,7 @@ export const unfollow = (users: Profile[], user: Profile, auth: AuthState, socke
 
     // unfollow user
     dispatch({
-        type: profile_types.UNFOLLOW,
+        type: user_constants.UNFOLLOW,
         payload: newUser
     });
 

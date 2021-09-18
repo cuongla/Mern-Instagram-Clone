@@ -1,15 +1,23 @@
-export const global_constants = {
-    THEME: 'THEME',
-    MODAL: 'MODAL',
-    ALERT: 'ALERT',
-    LOADING: 'LOADING',
-    SOCKET: 'SOCKET'
+export enum GlobalTypes {
+    THEME = 'THEME',
+    MODAL = 'MODAL',
+    ALERT = 'ALERT',
+    LOADING = 'LOADING',
+    SOCKET = 'SOCKET'
 }
 
 // Theme
 interface SetThemeAction {
-    type: typeof global_constants.THEME
+    type: typeof GlobalTypes.THEME
     payload: boolean
+}
+
+// Seartch 
+export interface SearchResult {
+    _id: string
+    fullname: string
+    username: string
+    avatar: string
 }
 
 // Alert
@@ -21,26 +29,25 @@ export interface AlertState {
 }
 
 interface SetAlertAction {
-    type: typeof global_constants.ALERT
-    payload: AlertState
+    type: typeof GlobalTypes.ALERT
+    payload: { error: string }
 }
-
 
 // Modal 
 interface OpenModalAction {
-    type: typeof global_constants.MODAL
+    type: typeof GlobalTypes.MODAL
     payload: boolean
 }
 
 // loading
 interface LoadingAction {
-    type: typeof global_constants.LOADING,
+    type: typeof GlobalTypes.LOADING,
     payload: boolean
 }
 
 // Socket
 interface SocketAction {
-    type: typeof global_constants.SOCKET,
+    type: typeof GlobalTypes.SOCKET,
     payload: any
 }
 

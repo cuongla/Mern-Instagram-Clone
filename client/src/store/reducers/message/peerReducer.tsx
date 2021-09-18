@@ -1,8 +1,8 @@
-import { message_constants, MessageActions } from 'typings/messageTypes';
+import { MessageTypes, MessageActions } from 'types/messageTypes';
 
 const peerReducer = (state = null, action: MessageActions) => {
     switch (action.type) {
-        case message_constants.PEER:
+        case MessageTypes.PEER:
             return action.payload;
         default:
             return state;

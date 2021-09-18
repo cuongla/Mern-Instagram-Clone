@@ -1,4 +1,4 @@
-import { NotificationActions, NotificationState, notification_constants, NotificationData } from "typings/notificationTypes";
+import { NotificationActions, NotificationState, NotificationTypes, NotificationPayload } from "types/notificationTypes";
 import { editData } from '../actions/globalActions';
 
 const initialState: NotificationState = {
@@ -9,35 +9,34 @@ const initialState: NotificationState = {
 
 const notificationReducer = (state = initialState, action: NotificationActions) => {
     switch (action.type) {
-        case notification_constants.GET_NOTIFICATIONS:
+        case NotificationTypes.GET_NOTIFICATIONS:
             return {
                 ...state,
                 data: action.payload
             };
-        case notification_constants.CREATE_NOTIFICATION:
+        case NotificationTypes.CREATE_NOTIFICATION:
             return {
                 ...state,
                 data: [action.payload, ...state.data]
             };
-        case notification_constants.REMOVE_NOTIFICATION:
+        case NotificationTypes.REMOVE_NOTIFICATION:
             return {
                 ...state,
                 data: state.data.filter(item => (
-                    item.id !== (action.payload as NotificationData).id || item.url !== (action.payload as NotificationData).url
+                    item.id !== action.payload!._id || item.url !== action.payload!.url
                 ))
             };
-        case notification_constants.UPDATE_NOTIFICATION:
+        case NotificationTypes.UPDATE_NOTIFICATION:
             return {
                 ...state,
-                data: editData
-                    (state.data, action.payload._id, action.payload)
+                data: editData(state.data, (action.payload as NotificationPayload)._id, action.payload)
             };
-        case notification_constants.UPDATE_SOUND:
+        case NotificationTypes.UPDATE_SOUND:
             return {
                 ...state,
                 sound: action.payload
             };
-        case notification_constants.DELETE_ALL_NOTIFICATIONS:
+        case NotificationTypes.DELETE_ALL_NOTIFICATIONS:
             return {
                 ...state,
                 data: action.payload

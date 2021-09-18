@@ -1,23 +1,23 @@
 import { Dispatch } from 'react';
 import { imageUpload } from 'utils/imageUpload';
 import { getDataAPI, postDataAPI, deleteDataAPI, patchDataAPI } from 'utils/fetchData';
-import { AuthState, authTypes } from 'store/types/authTypes';
-import { PostAction, PostData, post_types } from 'store/types/postTypes';
-import { global_types } from 'store/types/globalTypes';
+import { IAuthState, auth_constants } from 'types/authTypes';
+import { PostAction, PostData, post_constants } from 'types/postTypes';
+import { global_constants } from 'types/globalTypes';
 import { createNotification, removeNotification } from './notificationActions';
 import { Socket } from 'socket.io-client';
-import { NotificationActions } from 'store/types/notificationTypes';
+import { NotificationActions } from 'types/notificationTypes';
 
 interface IMedia {
     public_id: string
     url: string
 }
 
-export const createPost = (content: string, images: any[], auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
+export const createPost = (content: string, images: any[], auth: IAuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     let media: IMedia[] = [];
 
     try {
-        dispatch({ type: global_types.ALERT, payload: { loading: true } });
+        dispatch({ type: global_constants.ALERT, payload: { loading: true } });
 
         if (images.length > 0) media = await imageUpload(images);
 
@@ -32,7 +32,7 @@ export const createPost = (content: string, images: any[], auth: AuthState, sock
         );
 
         dispatch({
-            type: post_types.CREATE_POST,
+            type: post_constants.CREATE_POST,
             payload: { ...(await res).data.newPost, user: auth.user }
         });
 
@@ -49,7 +49,7 @@ export const createPost = (content: string, images: any[], auth: AuthState, sock
         dispatch(createNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -59,20 +59,20 @@ export const createPost = (content: string, images: any[], auth: AuthState, sock
 
 export const getPosts = (token: string) => async (dispatch: Dispatch<PostAction>) => {
     try {
-        dispatch({ type: post_types.LOADING_POST, payload: true });
+        dispatch({ type: post_constants.LOADING_POST, payload: true });
 
         // get data
         const res = await getDataAPI('posts', token);
         dispatch({
-            type: post_types.GET_POSTS,
+            type: post_constants.GET_POSTS,
             payload: res.data
         })
 
 
-        dispatch({ type: post_types.LOADING_POST, payload: false });
+        dispatch({ type: post_constants.LOADING_POST, payload: false });
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -80,7 +80,7 @@ export const getPosts = (token: string) => async (dispatch: Dispatch<PostAction>
     }
 }
 
-export const updatePost = (content: string, images: any[], auth: AuthState, status: any) => async (dispatch: Dispatch<PostAction>) => {
+export const updatePost = (content: string, images: any[], auth: IAuthState, status: any) => async (dispatch: Dispatch<PostAction>) => {
     let media: IMedia[] = [];
     const imgNewUrl = images.filter(img => !img.url);
     const imgOldUrl = images.filter(img => img.url);
@@ -93,7 +93,7 @@ export const updatePost = (content: string, images: any[], auth: AuthState, stat
     ) return;
 
     try {
-        dispatch({ type: global_types.ALERT, payload: { loading: true } });
+        dispatch({ type: global_constants.ALERT, payload: { loading: true } });
 
         if (imgNewUrl.length > 0) media = await imageUpload(imgNewUrl);
         const res = patchDataAPI(
@@ -106,14 +106,14 @@ export const updatePost = (content: string, images: any[], auth: AuthState, stat
         )
 
         dispatch({
-            type: post_types.UPDATE_POST,
+            type: post_constants.UPDATE_POST,
             payload: (await res).data.newPost
         });
 
-        dispatch({ type: global_types.ALERT, payload: { success: (await res).data.msg } });
+        dispatch({ type: global_constants.ALERT, payload: { success: (await res).data.msg } });
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -121,11 +121,11 @@ export const updatePost = (content: string, images: any[], auth: AuthState, stat
     }
 }
 
-export const likePost = (post: PostData, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
+export const likePost = (post: PostData, auth: IAuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     const newPost = { ...post, likes: [...post.likes, auth.user] };
 
     dispatch({
-        type: post_types.UPDATE_POST,
+        type: post_constants.UPDATE_POST,
         payload: newPost
     });
 
@@ -145,7 +145,7 @@ export const likePost = (post: PostData, auth: AuthState, socket: Socket) => asy
         dispatch(createNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -153,10 +153,10 @@ export const likePost = (post: PostData, auth: AuthState, socket: Socket) => asy
     }
 }
 
-export const unlikePost = (post: PostData, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
+export const unlikePost = (post: PostData, auth: IAuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     const newPost = { ...post, likes: post.likes.filter(like => like._id !== auth.user!._id) };
     dispatch({
-        type: post_types.UPDATE_POST,
+        type: post_constants.UPDATE_POST,
         payload: newPost
     });
 
@@ -173,7 +173,7 @@ export const unlikePost = (post: PostData, auth: AuthState, socket: Socket) => a
         dispatch(removeNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -181,14 +181,14 @@ export const unlikePost = (post: PostData, auth: AuthState, socket: Socket) => a
     }
 }
 
-export const getPostDetail = (detailPost: PostData[], id: string, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const getPostDetail = (detailPost: PostData[], id: string, auth: IAuthState) => async (dispatch: Dispatch<PostAction>) => {
     if (detailPost.every(post => post._id !== id)) {
         try {
             const res = await getDataAPI(`post/${id}`, auth.token);
-            dispatch({ type: post_types.GET_POST, payload: res.data.post });
+            dispatch({ type: post_constants.GET_POST, payload: res.data.post });
         } catch (err) {
             dispatch({
-                type: global_types.ALERT,
+                type: global_constants.ALERT,
                 payload: {
                     error: err.response.data.msg
                 }
@@ -197,7 +197,7 @@ export const getPostDetail = (detailPost: PostData[], id: string, auth: AuthStat
     }
 }
 
-export const deletePost = (post: PostData, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
+export const deletePost = (post: PostData, auth: IAuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     try {
         const res = await deleteDataAPI(`post/${post._id}`, auth.token)
 
@@ -212,13 +212,13 @@ export const deletePost = (post: PostData, auth: AuthState, socket: Socket) => a
         dispatch(removeNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: { error: err.response.data.msg }
         })
     }
 }
 
-export const savePost = (post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const savePost = (post: PostData, auth: IAuthState) => async (dispatch: Dispatch<PostAction>) => {
     const newUser = { ...auth.user, saved: [...auth.user!.savedPost, post._id] };
 
     dispatch({ type: authTypes.AUTH, payload: { ...auth, user: newUser } })
@@ -227,13 +227,13 @@ export const savePost = (post: PostData, auth: AuthState) => async (dispatch: Di
         await patchDataAPI(`savePost/${post._id}`, null, auth.token)
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: { error: err.response.data.msg }
         })
     }
 }
 
-export const unSavePost = (post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const unSavePost = (post: PostData, auth: IAuthState) => async (dispatch: Dispatch<PostAction>) => {
     // @ts-ignore
     const newUser = { ...auth.user, saved: auth.user!.savedPost.filter(id => id !== post._id) };
 
@@ -243,7 +243,7 @@ export const unSavePost = (post: PostData, auth: AuthState) => async (dispatch: 
         await patchDataAPI(`unSavePost/${post._id}`, null, auth.token)
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: { error: err.response.data.msg }
         })
     }

@@ -1,21 +1,21 @@
-import { IUserData } from './userTypes';
+import { UserPayload } from './userTypes';
 
-export const auth_constants = {
-    AUTH: 'AUTH'
+export enum AuthTypes {
+    AUTH = 'AUTH'
 }
 
-export interface IAuthState {
-    user: IUserData | null
+export interface AuthState {
+    user: UserPayload | null
     token: string
 }
 
-export interface IAuthData {
+export interface AuthPayload {
     msg: string
     access_token: string,
     user: any
 }
 
-export interface RegisterData {
+export interface RegisterInputs {
     fullname: string
     username: string
     email: string
@@ -31,8 +31,8 @@ export interface LoginData {
 
 // actions
 interface SetAuthAction {
-    type: typeof auth_constants.AUTH
-    payload: IAuthData
+    type: typeof AuthTypes.AUTH
+    payload: AuthPayload
 }
 
 export type AuthAction = SetAuthAction;

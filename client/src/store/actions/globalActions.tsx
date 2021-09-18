@@ -5,7 +5,10 @@ export const editData = (data: any, id: string, post: any) => {
     return newData;
 }
 
-export const deleteData = (data: any, id: string) => {
+export const deleteData = (
+    data: any,
+    id: any
+) => {
     const newData = data.filter((item: any) => item._id !== id);
     return newData;
 }

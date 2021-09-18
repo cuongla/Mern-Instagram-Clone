@@ -1,13 +1,8 @@
-import { AuthAction, IAuthState, auth_constants } from 'typings/authTypes';
+import { AuthTypes, AuthAction } from 'store/types/auth.types';
 
-const initialState: IAuthState = {
-    user: null,
-    token: ''
-};
-
-const authReducer = (state = initialState, action: AuthAction) => {
+const authReducer = (state = {}, action: AuthAction) => {
     switch (action.type) {
-        case auth_constants.AUTH:
+        case AuthTypes.AUTH:
             return action.payload;
         default:
             return state;

@@ -1,33 +1,27 @@
-import { PostAction, IPostState, post_constants } from 'typings/postTypes';
-import { editData } from '../../actions/globalActions';
+import { PostAction, SinglePostTypes } from 'store/types/post.types';
+import { editData } from 'store/actions/globalActions';
 
-const initialState: IPostState = {
+const initialState = {
     loading: false,
-    posts: [],
-    result: 0,
-    page: 2,
+    posts: []
 };
 
-const authReducer = (state = initialState, action: PostAction) => {
+const postReducer = (state = initialState, action: PostAction) => {
     switch (action.type) {
-        case post_constants.CREATE_POST:
-            return {
-                ...state,
-                posts: [action.payload, ...state.posts]
-            }
-        case post_constants.LOADING_POST:
+        case SinglePostTypes.LOADING_POST:
             return {
                 ...state,
                 loading: action.payload
             }
-        case post_constants.GET_POSTS:
+        case SinglePostTypes.GET_POST:
+            // @ts-ignore
+            return [...state, action.payload]
+        case SinglePostTypes.CREATE_POST:
             return {
                 ...state,
-                result: action.payload.result,
-                page: action.payload.page,
-                posts: action.payload.posts
+                posts: [action.payload, ...state.posts]
             }
-        case post_constants.UPDATE_POST:
+        case SinglePostTypes.UPDATE_POST:
             return {
                 ...state,
                 posts: editData(
@@ -41,4 +35,4 @@ const authReducer = (state = initialState, action: PostAction) => {
     }
 }
 
-export default authReducer;
+export default postReducer;

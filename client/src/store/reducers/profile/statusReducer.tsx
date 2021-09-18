@@ -1,10 +1,10 @@
-import { ProfileActions, user_constants } from 'typings/userTypes';
+import { ProfileActions, UserTypes } from 'types/userTypes';
 
 const initialState: boolean = false;
 
 const statusReducer = (state = initialState, action: ProfileActions) => {
     switch (action.type) {
-        case user_constants.STATUS:
+        case UserTypes.STATUS:
             return action.payload;
         default:
             return state;

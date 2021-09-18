@@ -1,4 +1,4 @@
-import { ProfileActions, ProfileState, user_constants } from 'typings/userTypes';
+import { ProfileActions, ProfileState, user_constants } from 'types/userTypes';
 import { editData } from '../../actions/globalActions';
 
 

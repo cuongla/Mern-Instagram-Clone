@@ -1,21 +1,21 @@
 import { Socket } from 'socket.io-client';
 import { Dispatch } from 'react';
-import { AuthState } from "store/types/authTypes";
-import { global_types } from 'store/types/globalTypes';
-import { CommentData, PostAction, PostData, post_types } from "store/types/postTypes";
+import { IAuthState } from "types/authTypes";
+import { global_constants } from 'types/globalTypes';
+import { CommentData, PostAction, IPostData, post_constants } from "types/postTypes";
 import { deleteDataAPI, patchDataAPI, postDataAPI } from 'utils/fetchData';
 import { deleteData, editData } from './globalActions';
 import { createNotification, removeNotification } from './notificationActions';
-import { NotificationActions } from 'store/types/notificationTypes';
+import { NotificationActions } from 'types/notificationTypes';
 
-export const createComment = (post: PostData, newComment: any, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
+export const createComment = (post: IPostData, newComment: any, auth: IAuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     const newPost = {
         ...post,
         comments: [...post.comments, newComment]
     };
 
     dispatch({
-        type: post_types.UPDATE_POST,
+        type: post_constants.UPDATE_POST,
         payload: newPost
     });
 
@@ -29,7 +29,7 @@ export const createComment = (post: PostData, newComment: any, auth: AuthState, 
 
         const newData = { ...res.data.newComment, user: auth.user };
         const updatedPost = { ...post, comments: [...post.comments, newData] };
-        dispatch({ type: post_types.UPDATE_POST, payload: updatedPost });
+        dispatch({ type: post_constants.UPDATE_POST, payload: updatedPost });
 
         // Socket
         socket.emit('createComment', newPost);
@@ -47,7 +47,7 @@ export const createComment = (post: PostData, newComment: any, auth: AuthState, 
         dispatch(createNotification(msg, auth, socket) as NotificationActions);
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -55,11 +55,11 @@ export const createComment = (post: PostData, newComment: any, auth: AuthState, 
     }
 }
 
-export const updateComment = (comment: CommentData, post: PostData, content: string, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const updateComment = (comment: CommentData, post: IPostData, content: string, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
     const newComments = editData(post.comments, comment._id, { ...comment, content });
     const newPost = { ...post, comments: newComments };
 
-    dispatch({ type: post_types.UPDATE_POST, payload: newPost });
+    dispatch({ type: post_constants.UPDATE_POST, payload: newPost });
 
     try {
         await patchDataAPI(
@@ -69,7 +69,7 @@ export const updateComment = (comment: CommentData, post: PostData, content: str
         );
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -77,19 +77,19 @@ export const updateComment = (comment: CommentData, post: PostData, content: str
     }
 }
 
-export const likeComment = (comment: CommentData, post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const likeComment = (comment: CommentData, post: IPostData, auth: IAuthState) => async (dispatch: Dispatch<PostAction>) => {
     const newComment = { ...comment, likes: [...comment.likes, auth.user] };
     const newComments = editData(post.comments, comment._id, newComment);
 
     const newPost = { ...post, comments: newComments }
 
-    dispatch({ type: post_types.UPDATE_POST, payload: newPost });
+    dispatch({ type: post_constants.UPDATE_POST, payload: newPost });
 
     try {
         await patchDataAPI(`comment/${comment._id}/like`, null, auth.token);
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -97,19 +97,19 @@ export const likeComment = (comment: CommentData, post: PostData, auth: AuthStat
     }
 }
 
-export const unlikeComment = (comment: CommentData, post: PostData, auth: AuthState) => async (dispatch: Dispatch<PostAction>) => {
+export const unlikeComment = (comment: CommentData, post: IPostData, auth: IAuthState) => async (dispatch: Dispatch<PostAction>) => {
     const newComment = { ...comment, likes: deleteData(comment.likes, auth.user!._id) };
     const newComments = editData(post.comments, comment._id, newComment);
 
     const newPost = { ...post, comments: newComments }
 
-    dispatch({ type: post_types.UPDATE_POST, payload: newPost });
+    dispatch({ type: post_constants.UPDATE_POST, payload: newPost });
 
     try {
         await patchDataAPI(`comment/${comment._id}/unlike`, null, auth.token);
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }
@@ -117,7 +117,7 @@ export const unlikeComment = (comment: CommentData, post: PostData, auth: AuthSt
     }
 }
 
-export const deleteComment = (post: PostData, comment: CommentData, auth: AuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
+export const deleteComment = (post: IPostData, comment: CommentData, auth: IAuthState, socket: Socket) => async (dispatch: Dispatch<PostAction | NotificationActions>) => {
     // @ts-ignore
     const deleteArr = [...post.comments.filter(cm => cm.reply === comment._id), comment];
 
@@ -127,7 +127,7 @@ export const deleteComment = (post: PostData, comment: CommentData, auth: AuthSt
     };
 
     dispatch({
-        type: post_types.UPDATE_POST,
+        type: post_constants.UPDATE_POST,
         payload: newPost
     });
 
@@ -142,12 +142,12 @@ export const deleteComment = (post: PostData, comment: CommentData, auth: AuthSt
                 recipients: comment.reply ? [comment.tag._id] : [post.user._id],
                 url: `/post/${post._id}`,
             }
-    
+
             dispatch(removeNotification(msg, auth, socket) as NotificationActions);
         });
     } catch (err) {
         dispatch({
-            type: global_types.ALERT,
+            type: global_constants.ALERT,
             payload: {
                 error: err.response.data.msg
             }

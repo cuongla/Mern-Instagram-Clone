@@ -1,12 +1,12 @@
 import { editData } from 'store/actions/globalActions';
-import { PostAction, IPostData, post_constants } from 'typings/postTypes';
+import { PostAction, PostPayload, PostTypes } from 'types/postTypes';
 
-const detailPostReducer = (state: IPostData[] = [], action: PostAction) => {
+const detailPostReducer = (state: PostPayload[] = [], action: PostAction) => {
     switch (action.type) {
-        case post_constants.GET_POST:
+        case PostTypes.GET_POST:
             return [...state, action.payload]
-        case post_constants.UPDATE_POST:
-            return editData(state, action.payload._id, action.payload)
+        case PostTypes.UPDATE_POST:
+            return editData(state, action.payload._id as string, action.payload)
         default:
             return state;
     }
